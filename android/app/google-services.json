@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "502688082822",
+    "firebase_url": "https://student-followup-3c342.firebaseio.com",
+    "project_id": "student-followup-3c342",
+    "storage_bucket": "student-followup-3c342.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502688082822:android:83aa9a182a05ee21241a07",
+        "android_client_info": {
+          "package_name": "com.example.student_follow_up_teacher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502688082822-kk7t77rpasgv6ipj0fof1fuojjs4g0eg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR_xfNOECWLtt9dcPUfuGHamxKcsStgQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502688082822-kk7t77rpasgv6ipj0fof1fuojjs4g0eg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502688082822:android:9b70e0a6c5747d3f241a07",
+        "android_client_info": {
+          "package_name": "student.follow.up.student_follow_up_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502688082822-kk7t77rpasgv6ipj0fof1fuojjs4g0eg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR_xfNOECWLtt9dcPUfuGHamxKcsStgQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502688082822-kk7t77rpasgv6ipj0fof1fuojjs4g0eg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
