@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
-import 'package:student_follow_up_teacher/screens/choose_version.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../models/teacher_account.dart';
 import 'package:firebase_database/firebase_database.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_follow_up_teacher/screens/attendance.dart';
 import '../colors/colors.dart';
-
+import '../screens/add_center.dart';
 class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class DrawerWidget extends StatelessWidget {
             //to not put a back button
             automaticallyImplyLeading: false,
           ),
-          Divider(),
+          //  Divider(),
           ListTile(
               leading: Icon(
                 Icons.insert_drive_file,
@@ -29,6 +29,18 @@ class DrawerWidget extends StatelessWidget {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => Attendance()));
+              }),
+          Divider(),
+          ListTile(
+              leading: Icon(
+                Icons.add_circle,
+                color: accentColor,
+              ),
+              title: Text("اضافة سنتر", style: TextStyle(fontSize: 15)),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AddCenter()));
               }),
           Divider(),
         ]));
