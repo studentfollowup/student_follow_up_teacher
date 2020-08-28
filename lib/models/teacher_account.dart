@@ -4,13 +4,13 @@ import 'package:flutter/foundation.dart';
 class TeacherAccount {
   String userId;
   String teacherCode;
-
   String imageUrl;
   String name;
   String subject;
   String description;
   String numbers;
   String educationLevels;
+  bool accepted = false;
 
   TeacherAccount(
       {this.userId,
@@ -20,7 +20,8 @@ class TeacherAccount {
       @required this.subject,
       @required this.description,
       @required this.numbers,
-      @required this.educationLevels});
+      @required this.educationLevels,
+      this.accepted});
 
   toMap() {
     return {
@@ -30,7 +31,8 @@ class TeacherAccount {
       "subject": subject,
       "description": description,
       "numbers": numbers,
-      "educationLevels": educationLevels
+      "educationLevels": educationLevels,
+      "accepted": false
     };
   }
 
@@ -42,5 +44,6 @@ class TeacherAccount {
         subject = dataSnapshot.value["subject"],
         description = dataSnapshot.value["description"],
         numbers = dataSnapshot.value["numbers"],
-        educationLevels = dataSnapshot.value["educationLevels"];
+        educationLevels = dataSnapshot.value["educationLevels"],
+        accepted = dataSnapshot.value["accepted"];
 }

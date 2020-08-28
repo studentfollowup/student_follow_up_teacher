@@ -43,7 +43,7 @@ class _CreateAccountState extends State<CreateAccount> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (titleText == "تعديل الحساب الشخصى") {
-//        print("ana b3dl el profile");
+        print("ana b3dl el profile");
 //        print(teacherAccount.imageUrl);
 //        print(teacherAccount.teacherCode);
 //        print(teacherAccount.name);
@@ -55,6 +55,10 @@ class _CreateAccountState extends State<CreateAccount> {
 
         teacherAccount.teacherCode = widget._teacher.teacherCode;
         teacherAccount.userId=widget._teacher.userId;
+        teacherAccount.accepted=widget._teacher.accepted  ;
+        print(teacherAccount.teacherCode);
+        print(teacherAccount.userId);
+        print(teacherAccount.accepted);
         _firebaseRef.child(widget._teacher.userId).set(teacherAccount.toMap());
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (ctx) => Profile(teacherAccount)));
