@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
+import 'package:student_follow_up_teacher/screens/choose_version.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../models/teacher_account.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../colors/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:true_time/true_time.dart';
+import 'package:ntp/ntp.dart';
 
 class CreateAccount extends StatefulWidget {
   final TeacherAccount _teacher;
@@ -25,17 +29,29 @@ class _CreateAccountState extends State<CreateAccount> {
   var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   String titleText = "انشاء حساب جديد";
   String buttonText = "انشاء حساب";
+  bool _initialized = false;
+  DateTime _currentTime;
 
   TeacherAccount teacherAccount = new TeacherAccount(
-      imageUrl: null,
       teacherCode: null,
+      imageUrl: null,
       name: null,
       subject: null,
       description: null,
       numbers: null,
-      educationLevels: null);
+      educationLevels: null,
+      clerkCode: null,
+      version: null);
+  DateTime _myTime;
+
   FirebaseUser mCurrentUser;
   FirebaseAuth _auth;
+
+  Future<void> saveTeacherId(String id) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString("teacherId", id);
+    print("teacherId in shared ${pref.getString("teacherId")}");
+  }
 
   //save function of form
   Future<void> onSave() async {
@@ -44,7 +60,7 @@ class _CreateAccountState extends State<CreateAccount> {
       _formKey.currentState.save();
       if (titleText == "تعديل الحساب الشخصى") {
         print("ana b3dl el profile");
-//        print(teacherAccount.imageUrl);
+        print(teacherAccount.accepted);
 //        print(teacherAccount.teacherCode);
 //        print(teacherAccount.name);
 //        print(teacherAccount.userId);
@@ -52,28 +68,60 @@ class _CreateAccountState extends State<CreateAccount> {
 //        print(teacherAccount.description);
 //        print(teacherAccount.numbers);
 //        print(teacherAccount.subject);
-
+//
         teacherAccount.teacherCode = widget._teacher.teacherCode;
-        teacherAccount.userId=widget._teacher.userId;
-        teacherAccount.accepted=widget._teacher.accepted  ;
-        print(teacherAccount.teacherCode);
-        print(teacherAccount.userId);
-        print(teacherAccount.accepted);
+        teacherAccount.userId = widget._teacher.userId;
+        teacherAccount.accepted = widget._teacher.accepted;
+        teacherAccount.clerkCode = widget._teacher.clerkCode;
+        print("this is accept => ${widget._teacher.accepted}");
+        teacherAccount.version=widget._teacher.version;
+
         _firebaseRef.child(widget._teacher.userId).set(teacherAccount.toMap());
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (ctx) => Profile(teacherAccount)));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (ctx) => Profile(teacherAccount.userId)));
       } else {
+        _myTime = await NTP.now();
+
         teacherAccount.teacherCode = randomNumeric(5);
-        _firebaseRef.push().set(teacherAccount.toMap());
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (ctx) => Profile(teacherAccount)));
+        teacherAccount.clerkCode = randomNumeric(5);
+        teacherAccount.version = widget._teacher.version;
+        if (teacherAccount.version == "النسخة التجريبية") {
+          teacherAccount.expiryDate = _myTime.add(Duration(days: 7));
+          teacherAccount.accepted=true;
+        }
+        _firebaseRef = _firebaseRef.push();
+        String id = _firebaseRef.key;
+        print("id is >>>> $id");
+        _firebaseRef.set(teacherAccount.toMap());
+        print("version >>> ${widget._teacher.version}");
+        saveTeacherId(id);
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (ctx) => Profile(id)));
+
+//        Navigator.of(context).pushReplacement(MaterialPageRoute(
+//            builder: (ctx) => Profile(teacherAccount.userId)));
       }
     }
   }
 
-//  _getCurrentUser() async {
-//    mCurrentUser = await _auth.currentUser();
-//  }
+  Future<void> getTime() async {
+    print("i'm on time zone");
+    _myTime = await NTP.now();
+    DateTime _ntpTime;
+
+    /// Or you could get NTP current (It will call DateTime.now() and add NTP offset to it)
+    print("from date time .now ${DateTime.now()}");
+
+    /// Or get NTP offset (in milliseconds) and add it yourself
+    final int offset = await NTP.getNtpOffset(localTime: DateTime.now());
+    _ntpTime = _myTime.add(Duration(milliseconds: offset));
+
+    print('My time: $_myTime');
+    print('NTP time: $_ntpTime');
+    print('Difference: ${_myTime.difference(_ntpTime).inMilliseconds}ms');
+  }
+
+
 
   @override
   void dispose() {
@@ -89,12 +137,18 @@ class _CreateAccountState extends State<CreateAccount> {
     print("Teacher ID: --> ${widget._teacher.userId}");
     if (widget._teacher.name != null) {
       setState(() {
-        teacherAccount.imageUrl=widget._teacher.imageUrl;
-        titleText = "تعديل الحساب الشخصى";
-        buttonText = "حفظ";
+          titleText = "تعديل الحساب الشخصى";
+          buttonText = "حفظ";
+        _firebaseRef
+            .child(widget._teacher.userId)
+            .once()
+            .then((DataSnapshot dataSnapshot) {
+          teacherAccount = TeacherAccount.fromSnapshot(dataSnapshot);
+        });
+        teacherAccount.imageUrl = widget._teacher.imageUrl;
       });
     }
-
+    getTime();
 //  _auth = FirebaseAuth.instance;
 //  _getCurrentUser();
 //  print("this is current user: $mCurrentUser");
@@ -161,7 +215,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                                       color: primaryColor)),
                                               prefixIcon: Icon(
                                                 Icons.photo,
-                                                color: accentColor,
+                                                color: primaryColor,
                                                 textDirection:
                                                     TextDirection.rtl,
                                               ),
@@ -175,9 +229,8 @@ class _CreateAccountState extends State<CreateAccount> {
                                                   EdgeInsets.symmetric(
                                                       horizontal: 5),
                                               labelText: "رابط الصورة",
-                                              labelStyle: TextStyle(
-                                                  color: accentColor,
-                                                  fontSize: 17),
+                                              labelStyle:
+                                                  TextStyle(fontSize: 17),
                                               // helperText: "hello"
                                             ),
                                             validator: (value) {
@@ -208,8 +261,7 @@ class _CreateAccountState extends State<CreateAccount> {
                               decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20))),
-                              //color: Colors.redAccent,
-                              width: deviceWidth * 0.6 + 20,
+                              //color: Colors.redprimaryColor                           width: deviceWidth * 0.6 + 20,
                               height: deviceHeight * 0.3,
                               alignment: Alignment.center,
                               //padding: EdgeInsets.all(8),
@@ -252,7 +304,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                               BorderSide(color: primaryColor)),
                                       prefixIcon: Icon(
                                         Icons.person,
-                                        color: accentColor,
+                                        color: primaryColor,
                                         textDirection: TextDirection.rtl,
                                       ),
                                       border: OutlineInputBorder(
@@ -264,8 +316,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 5),
                                       labelText: "اسم المعلم",
-                                      labelStyle: TextStyle(
-                                          color: accentColor, fontSize: 17),
+                                      labelStyle: TextStyle(fontSize: 17),
                                       // helperText: "hello"
                                     ),
                                     validator: (value) {
@@ -300,7 +351,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                       //  hintStyle: TextStyle(fontSize: 15),
                                       prefixIcon: Icon(
                                         Icons.subject,
-                                        color: accentColor,
+                                        color: primaryColor,
                                         textDirection: TextDirection.rtl,
                                       ),
                                       border: OutlineInputBorder(
@@ -312,8 +363,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 5),
                                       labelText: "المادة",
-                                      labelStyle: TextStyle(
-                                          color: accentColor, fontSize: 17),
+                                      labelStyle: TextStyle(fontSize: 17),
                                       // helperText: "hello"
                                     ),
                                     keyboardType: TextInputType.text,
@@ -346,7 +396,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                                 color: primaryColor)),
                                         prefixIcon: Icon(
                                           Icons.school,
-                                          color: accentColor,
+                                          color: primaryColor,
                                           textDirection: TextDirection.rtl,
                                         ),
                                         border: OutlineInputBorder(
@@ -358,8 +408,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                         contentPadding:
                                             EdgeInsets.symmetric(horizontal: 8),
                                         labelText: "المراحل الدراسية ",
-                                        labelStyle: TextStyle(
-                                            color: accentColor, fontSize: 17),
+                                        labelStyle: TextStyle(fontSize: 17),
                                         helperText:
                                             "مثال: الصف الاول ، الصف الثانى  "),
                                     validator: (value) {
@@ -388,7 +437,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                               BorderSide(color: primaryColor)),
                                       prefixIcon: Icon(
                                         Icons.description,
-                                        color: accentColor,
+                                        color: primaryColor,
                                         textDirection: TextDirection.rtl,
                                       ),
                                       border: OutlineInputBorder(
@@ -400,8 +449,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 5),
                                       labelText: "نبذة",
-                                      labelStyle: TextStyle(
-                                          color: accentColor, fontSize: 17),
+                                      labelStyle: TextStyle(fontSize: 17),
                                     ),
                                     validator: (value) {
                                       if (value.isEmpty) {
@@ -432,7 +480,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                               BorderSide(color: primaryColor)),
                                       prefixIcon: Icon(
                                         Icons.phone,
-                                        color: accentColor,
+                                        color: primaryColor,
                                         textDirection: TextDirection.rtl,
                                       ),
                                       border: OutlineInputBorder(
@@ -444,8 +492,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 5),
                                       labelText: "ارقام التليفون",
-                                      labelStyle: TextStyle(
-                                          color: accentColor, fontSize: 17),
+                                      labelStyle: TextStyle(fontSize: 17),
                                       // helperText: "hello"
                                     ),
                                     validator: (value) {
@@ -470,20 +517,31 @@ class _CreateAccountState extends State<CreateAccount> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50)),
                               child: Builder(
-                                builder: (ctx) => RaisedButton(
-                                    color: primaryColor,
-                                    textColor: Colors.white,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 15),
-                                    elevation: 3,
-                                    child: Text(
-                                      buttonText,
-                                      style: TextStyle(fontSize: 18),
-                                      textAlign: TextAlign.center,
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                                    onPressed: () {
-                                      onSave();
+                                builder: (ctx) => Container(
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                          colors: [
+                                        primaryColor.withRed(300),
+                                        primaryColor.withGreen(200),
+                                        primaryColor.withBlue(250)
+                                      ])),
+                                  width: deviceWidth * 0.4,
+                                  child: RaisedButton(
+                                      color: primaryColor,
+                                      textColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 15),
+                                      elevation: 3,
+                                      child: Text(
+                                        buttonText,
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                      onPressed: () {
+                                        onSave();
 //                                      if(saved==true){
 //                                        Scaffold.of(context).showSnackBar(SnackBar(
 //                                          content: Text(
@@ -491,7 +549,8 @@ class _CreateAccountState extends State<CreateAccount> {
 //                                            textAlign: TextAlign.center,
 //                                          ),
 //                                        ));
-                                    }),
+                                      }),
+                                ),
                               ))
                         ],
                       ),

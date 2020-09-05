@@ -25,5 +25,5 @@ class NewCenter {
       : centerId = dataSnapshot.key,
         centerName = dataSnapshot.value["centerName"],
         educationLevels = dataSnapshot.value["educationLevel"],
-        lectureCost = dataSnapshot.value["lectureCost"];
+        lectureCost = dataSnapshot.value["lectureCost"]+0.0;
 }

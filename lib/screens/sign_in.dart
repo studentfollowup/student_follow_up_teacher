@@ -18,11 +18,11 @@ class _SignInState extends State<SignIn> {
   List<TeacherAccount> _teachers = [];
 
   var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
-
+  TeacherAccount teacher ;
   int index;
 
   TeacherAccount getTeacher(String code) {
-    print("teachers number =${_teachers.length}");
+      print("teachers number =${_teachers.length}");
     index = _teachers.indexWhere((element) => element.teacherCode == code);
     if (index == -1) {
       Toast.show("كود خاطىء ، حاول مرة اخرى", context,
@@ -32,21 +32,31 @@ class _SignInState extends State<SignIn> {
     // print("index is = $index");
 
     else{
+      if(_teachers[index].expired!=true){
       saveTeacherId(index);
       return _teachers[index];
+
+      }
+      else{
+        Toast.show("كود خاطىء ، حاول مرة اخرى", context,
+            duration: 3, gravity: Toast.CENTER);
+        return null;
+      }
   }}
 
 
   Future<void> saveTeacherId(int index) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString("teacherId",_teachers[index].userId);}
+    pref.setString("teacherId",_teachers[index].userId);
+  //print("teacherId in shared ${pref.getString("teacherId")}");
+  }
   @override
   void initState() {
     // TODO: implement initState
 
     onChildAdded(Event event) {
       _teachers.add(TeacherAccount.fromSnapshot(event.snapshot));
-      print("teachers number onChild added=${_teachers.length}");
+      //print("teachers number onChild added=${_teachers.length}");
     }
     _firebaseRef.onChildAdded.listen(onChildAdded);
 
@@ -137,12 +147,12 @@ class _SignInState extends State<SignIn> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 onPressed: () {
-                  TeacherAccount teacher = getTeacher(codeController.text);
-                  print(teacher);
+                   teacher = getTeacher(codeController.text);
+              //    print(teacher);
 
                   if (teacher != null) {
                     Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (ctx) => Profile(teacher)));
+                        MaterialPageRoute(builder: (ctx) => Profile(teacher.userId)));
                   }
                 },
               )

@@ -14,51 +14,54 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
+//  final _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   TeacherAccount currentUser;
-  var teacherId;
+  String teacherId;
 
   @override
   void initState() {
     Timer(Duration(seconds: 5), () {
-      print("teacher id : $teacherId");
-      if (teacherId != null) {
-        print("i'm here");
-        _firebaseRef.child(teacherId).once().then((DataSnapshot dataSnapshot) {
-          currentUser = TeacherAccount.fromSnapshot(dataSnapshot);
-        });
-
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (ctx) => Profile(currentUser)));
-      } else
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (ctx) => TeacherCase()));
+      autoLogin();
     });
+
     super.initState();
   }
+
+//      print("teacher id : $teacherId");
+//      if (teacherId != null) {
+//        print("i'm here");
+//
+//  }
 
   Future<String> autoLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (!pref.containsKey("teacherId")) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => TeacherCase()));
       return null;
-    } else {
-      teacherId = pref.getString("teacherId");
-      print(teacherId);
-      return teacherId;
     }
+
+    else {
+      teacherId = pref.getString("teacherId");
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => Profile(teacherId)));
+    }
+    print("result ==> $teacherId");
+    return teacherId;
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
             child: CircleAvatar(
-      radius: 90,
-      backgroundColor: Colors.pink,
-      child: CircleAvatar(
-        radius: 85,
-        backgroundImage: AssetImage('images/learning.png'),
-      ),
-    )));
+              radius: 90,
+              backgroundColor: Colors.pink,
+              child: CircleAvatar(
+                radius: 85,
+                backgroundImage: AssetImage('images/learning.png'),
+              ),
+            )));
   }
 }

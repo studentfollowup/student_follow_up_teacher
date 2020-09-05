@@ -11,28 +11,41 @@ class TeacherAccount {
   String numbers;
   String educationLevels;
   bool accepted = false;
+  String clerkCode;
+  String version;
+  DateTime expiryDate;
+  bool expired;
 
-  TeacherAccount(
-      {this.userId,
-      @required this.teacherCode,
-      @required this.imageUrl,
-      @required this.name,
-      @required this.subject,
-      @required this.description,
-      @required this.numbers,
-      @required this.educationLevels,
-      this.accepted});
+  TeacherAccount({
+    this.userId,
+    @required this.teacherCode,
+    @required this.imageUrl,
+    @required this.name,
+    @required this.subject,
+    @required this.description,
+    @required this.numbers,
+    @required this.educationLevels,
+    this.accepted,
+    @required this.clerkCode,
+    @required this.version,
+    this.expiryDate,
+    this.expired,
+  });
 
   toMap() {
     return {
+      "name": name,
       "teacherCode": teacherCode,
       "imageUrl": imageUrl,
-      "name": name,
       "subject": subject,
       "description": description,
       "numbers": numbers,
       "educationLevels": educationLevels,
-      "accepted": false
+      "accepted": accepted == null ? false : accepted,
+      "clerkCode": clerkCode,
+      "version": version,
+      "expiryDate": expiryDate == null ? null : expiryDate.toIso8601String(),
+      "expired": expired == null ? false : expired,
     };
   }
 
@@ -45,5 +58,9 @@ class TeacherAccount {
         description = dataSnapshot.value["description"],
         numbers = dataSnapshot.value["numbers"],
         educationLevels = dataSnapshot.value["educationLevels"],
-        accepted = dataSnapshot.value["accepted"];
+        accepted = dataSnapshot.value["accepted"],
+        clerkCode = dataSnapshot.value["clerkCode"],
+        version = dataSnapshot.value["version"],
+        expiryDate = DateTime.parse(dataSnapshot.value["expiryDate"]),
+        expired = dataSnapshot.value["expired"];
 }
