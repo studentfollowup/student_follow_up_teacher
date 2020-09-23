@@ -18,6 +18,15 @@ class _AddCenterState extends State<AddCenter> {
 
   NewCenter _newCenter =
       new NewCenter(centerName: null, educationLevels: null, lectureCost: null);
+  String _selectedEducationLevel;
+  List<String> _educationalLevel = [
+    "الصف الاول الاعدادى",
+    "الصف الثانى الاعدادى",
+    "الصف الثالث الاعدادى",
+    "الصف الاول الثانوى",
+    "الصف الثانى الثانوى",
+    "الصف الثالث الثانوى"
+  ];
 
   final _formKey = GlobalKey<FormState>();
 
@@ -98,39 +107,44 @@ class _AddCenterState extends State<AddCenter> {
                         SizedBox(
                           height: 15,
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(15),
-                                ),
-                                //  gapPadding: 5,
-                                borderSide: BorderSide(color: primaryColor)),
-                            prefixIcon: Icon(
-                              Icons.business_center,
-                              color: primaryColor,
-                              textDirection: TextDirection.rtl,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                            ),
-                            fillColor: Colors.white60,
-                            filled: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                            labelText: "المرحلة الدراسية",
-//
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "قيمة خاطئة";
-                            }
-                            return null;
-                          },
-                          onSaved: (val) {
-                            _newCenter.educationLevels = val;
-                          },
-                        ),
+          Container(width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: primaryColor),
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: DropdownButton(
+              hint: Text(
+                "اختر المرحلة الدراسية",
+                style: TextStyle(fontSize: 16),
+              ),
+              value: _selectedEducationLevel,
+              onChanged: (value) {
+                setState(() {
+                  _selectedEducationLevel = value;
+                  _newCenter.educationLevels=value;
+//                  getTeacher(value);
+                });
+              },
+              items: _educationalLevel.map((center) {
+                return DropdownMenuItem(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      center,
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          color: Colors.black, fontSize: 18),
+                    ),
+                  ),
+                  value: center,
+                );
+              }).toList(),
+            ),
+          ),
+
                         SizedBox(
                           height: 15,
                         ),
@@ -188,8 +202,7 @@ class _AddCenterState extends State<AddCenter> {
                                     horizontal: 15, vertical: 5),
                                 child: Text(
                                   "اضافة",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 22),
+                                  style:titleText,
                                 )),
                             //color: Colors.pink,
                             shape: RoundedRectangleBorder(

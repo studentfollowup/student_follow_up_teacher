@@ -392,9 +392,7 @@ class _ProfileState extends State<Profile> {
                                                 horizontal: 15, vertical: 5),
                                             child: Text(
                                               "تعديل",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
+                                              style: titleText,
                                             )),
                                         // color: Colors.pink,
                                         onPressed: () {
@@ -431,9 +429,7 @@ class _ProfileState extends State<Profile> {
                                                 horizontal: 15, vertical: 5),
                                             child: Text(
                                               "كود الموظف",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
+                                              style: titleText,
                                             )),
                                         //     color: Colors.pink,
                                         onPressed: currentUser.accepted == false

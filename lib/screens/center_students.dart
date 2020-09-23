@@ -127,66 +127,80 @@ class _CenterStudentsState extends State<CenterStudents> {
 
   void showBottomSheet(StudentAccount studentAccount) {
     scafoldKey.currentState.showBottomSheet((context) {
-      return new Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        height: MediaQuery.of(context).size.height * 0.3,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15), topLeft: Radius.circular(15)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
+
+      return GestureDetector(
+        onTap: (){
+          Navigator.pop(context);
+        },
+        child: new Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          margin: EdgeInsets.symmetric(horizontal: 5),
+          height: MediaQuery.of(context).size.height * 0.3,
+          decoration: BoxDecoration(
+            color: white,
+            border: Border.all(color: primaryColor),
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(15), topLeft: Radius.circular(15)),
+          ),
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3+20,
+
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
 //              mainAxisAlignment: MainAxisAlignment.start,
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(" :الاسم"),
-                Text(studentAccount.name),
-              ],
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text(" :الاسم",style: contrastText),
+                      Text(studentAccount.name,style: contrastText),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text(" :الكود",style: contrastText),
+                      Text(studentAccount.studentCode,style: contrastText),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text("  :المرحلة الدراسية",style: contrastText),
+                      Text(studentAccount.educationalLevel,style: contrastText),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text(" :اسم المدرسة ",style: contrastText),
+                      Text(studentAccount.schoolName,style: contrastText),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text(" :رقم الهاتف",style: contrastText),
+                      Text(studentAccount.studentPhone,style: contrastText),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(" :الكود"),
-                Text(studentAccount.studentCode),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              textDirection: TextDirection.rtl,
-              children: [
-                Text("  :المرحلة الدراسية"),
-                Text(studentAccount.educationalLevel),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(" :اسم المدرسة "),
-                Text(studentAccount.schoolName),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(" :رقم الهاتف"),
-                Text(studentAccount.studentPhone),
-              ],
-            ),
-          ],
+          ),
         ),
       );
     });

@@ -32,7 +32,7 @@ class _TeacherCaseState extends State<TeacherCase> {
               },
               child: Container(
                 width: deviceWidth * 0.8,
-                height: deviceHeight * 0.1 + 30,
+                height: deviceHeight * 0.1 + 40,
                 // padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 80),
                 child: Card(
                   color: Colors.pink,
@@ -59,7 +59,7 @@ class _TeacherCaseState extends State<TeacherCase> {
                   MaterialPageRoute(builder: (ctx) => SignIn())),
               child: Container(
                 width: deviceWidth * 0.8,
-                height: deviceHeight * 0.1 + 30,
+                height: deviceHeight * 0.1 + 40,
                 // padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 80),
                 child: Card(
                   color: Colors.amber,

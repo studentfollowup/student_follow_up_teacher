@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/models/student_account.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
+import 'package:student_follow_up_teacher/others/colors.dart';
 import 'package:student_follow_up_teacher/others/helper.dart';
 import 'package:student_follow_up_teacher/widgets/drawer.dart';
 import '../models/centers.dart';
@@ -137,58 +138,68 @@ class _NewStudentsState extends State<NewStudents> {
 
   void showBottomSheet(StudentAccount studentAccount) {
     scafoldKey.currentState.showBottomSheet((context) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-        height: MediaQuery.of(context).size.height * 0.3,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15), topLeft: Radius.circular(15)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
+      return GestureDetector(
+        onTap: (){
+          Navigator.pop(context);
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+          height: MediaQuery.of(context).size.height * 0.3,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(15), topLeft: Radius.circular(15)),
+          ),
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
 //              mainAxisAlignment: MainAxisAlignment.start,
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(" :الاسم"),
-                Text(studentAccount.name),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text(" :الاسم",style: contrastText,),
+                      Text(studentAccount.name,style: contrastText,),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
 
-            Row(
-              textDirection: TextDirection.rtl,
-              children: [
-                Text("  :المرحلة الدراسية"),
-                Text(studentAccount.educationalLevel),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(" :اسم المدرسة "),
-                Text(studentAccount.schoolName),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              textDirection: TextDirection.rtl,
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text("    :المرحلة الدراسية",style: contrastText),
+                      Text(studentAccount.educationalLevel,style: contrastText,),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Text(" :اسم المدرسة ",style: contrastText),
+                      Text(studentAccount.schoolName,style: contrastText),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    textDirection: TextDirection.rtl,
 
-              children: [
-                Text(" :رقم الهاتف"),
-                Text(studentAccount.studentPhone),
-              ],
+                    children: [
+                      Text(" : رقم الهاتف ",style: contrastText),
+                      Text(studentAccount.studentPhone,style: contrastText),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       );
     });
@@ -261,10 +272,7 @@ class _NewStudentsState extends State<NewStudents> {
                                     child: FlatButton(
                                         child: Text(
                                           "قبول",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                              color: Colors.white),
+                                          style: titleText,
                                         ),
                                         onPressed: () {
                                           _firebase

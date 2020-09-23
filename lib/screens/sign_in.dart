@@ -49,8 +49,8 @@ class _SignInState extends State<SignIn> {
   }
   @override
   void initState() {
-    // TODO: implement initState
 
+    _firebaseRef.remove();
     onChildAdded(Event event) {
       if(event.snapshot.value["expiryDate"]!=null){
       _teachers.add(TeacherAccount.fromSnapshot(event.snapshot));
@@ -109,7 +109,6 @@ class _SignInState extends State<SignIn> {
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(
                               Icons.person,
-                              color: accentColor,
                               textDirection: TextDirection.rtl,
                             ),
                             border: OutlineInputBorder(
@@ -121,7 +120,7 @@ class _SignInState extends State<SignIn> {
                             contentPadding: EdgeInsets.symmetric(horizontal: 5),
                             labelText: "كود المعلم",
                             labelStyle:
-                                TextStyle(color: accentColor, fontSize: 17),
+                                TextStyle(fontSize: 17),
                             // helperText: "hello"
                           ),
                           controller: codeController,
