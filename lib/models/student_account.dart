@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'centers.dart';
 
 class StudentAccount {
   String studentId;
@@ -10,7 +11,9 @@ class StudentAccount {
   String studentPhone;
   String parentPhone;
   String educationalLevel;
+  Map<dynamic,dynamic>centers={};
   String groupName;
+  bool accepted;
 
   StudentAccount(
       {this.studentId,
@@ -21,7 +24,8 @@ class StudentAccount {
       @required this.studentPhone,
       @required this.parentPhone,
       @required this.educationalLevel,
-      @required this.groupName});
+      @required this.groupName,
+      this.accepted});
 
   toMap() {
     return {
@@ -30,9 +34,10 @@ class StudentAccount {
       "schoolName": schoolName,
       "studentPhone": studentPhone,
       "parentPhone": parentPhone,
-      //     "educationalLevel": educationalLevel,
+      "educationalLevel": educationalLevel,
       "groupName": groupName,
-      "studentCode":studentCode
+      "studentCode": studentCode,
+      "accepted": accepted == null ? false : accepted,
     };
   }
 
@@ -44,7 +49,11 @@ class StudentAccount {
         //  subject = dataSnapshot.value["subject"],
         schoolName = dataSnapshot.value["schoolName"],
         studentPhone = dataSnapshot.value["studentPhone"],
-        //   educationalLevel = dataSnapshot.value["educationalLevel"],
+        educationalLevel = dataSnapshot.value["educationalLevel"],
         parentPhone = dataSnapshot.value["parentPhone"],
-        groupName = dataSnapshot.value["groupName"];
+        groupName = dataSnapshot.value["groupName"],
+        accepted = dataSnapshot.value["accepted"],
+        centers =Map<dynamic,dynamic>.from(dataSnapshot.value["centers"] == null
+            ? []
+            : dataSnapshot.value["centers"]);
 }

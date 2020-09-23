@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/choose_version.dart';
 import 'package:student_follow_up_teacher/screens/sign_in.dart';
-import '../colors/colors.dart';
+import '../others/colors.dart';
 import 'create_account.dart';
 
 class TeacherCase extends StatefulWidget {
@@ -32,7 +32,7 @@ class _TeacherCaseState extends State<TeacherCase> {
               },
               child: Container(
                 width: deviceWidth * 0.8,
-                height: deviceHeight * 0.1 + 20,
+                height: deviceHeight * 0.1 + 30,
                 // padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 80),
                 child: Card(
                   color: Colors.pink,
@@ -59,7 +59,7 @@ class _TeacherCaseState extends State<TeacherCase> {
                   MaterialPageRoute(builder: (ctx) => SignIn())),
               child: Container(
                 width: deviceWidth * 0.8,
-                height: deviceHeight * 0.1 + 20,
+                height: deviceHeight * 0.1 + 30,
                 // padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 80),
                 child: Card(
                   color: Colors.amber,

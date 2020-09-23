@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/create_account.dart';
-import '../colors/colors.dart';
+import '../others/colors.dart';
 import 'profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 

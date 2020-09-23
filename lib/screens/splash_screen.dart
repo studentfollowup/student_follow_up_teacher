@@ -27,11 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
   }
 
-//      print("teacher id : $teacherId");
-//      if (teacherId != null) {
-//        print("i'm here");
-//
-//  }
+
 
   Future<String> autoLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();

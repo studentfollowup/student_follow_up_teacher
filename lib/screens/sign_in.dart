@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
-import '../colors/colors.dart';
+import '../others/colors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../others/helper.dart';
 class SignIn extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();
@@ -23,7 +23,7 @@ class _SignInState extends State<SignIn> {
 
   TeacherAccount getTeacher(String code) {
       print("teachers number =${_teachers.length}");
-    index = _teachers.indexWhere((element) => element.teacherCode == code);
+    index = _teachers.indexWhere((element) => (element.teacherCode == code||element.clerkCode==code));
     if (index == -1) {
       Toast.show("كود خاطىء ، حاول مرة اخرى", context,
           duration: 3, gravity: Toast.CENTER);
@@ -33,6 +33,8 @@ class _SignInState extends State<SignIn> {
 
     else{
       if(_teachers[index].expired!=true){
+        print("i'm not expired && $code ");
+        print(_teachers[index].expired);
       saveTeacherId(index);
       return _teachers[index];
 
@@ -55,9 +57,10 @@ class _SignInState extends State<SignIn> {
     // TODO: implement initState
 
     onChildAdded(Event event) {
+      if(event.snapshot.value["expiryDate"]!=null){
       _teachers.add(TeacherAccount.fromSnapshot(event.snapshot));
       //print("teachers number onChild added=${_teachers.length}");
-    }
+    }}
     _firebaseRef.onChildAdded.listen(onChildAdded);
 
     super.initState();
@@ -74,7 +77,9 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("تسجيل الدخول "),
+          title: Align(
+              alignment: Alignment.centerRight,
+              child: Text("تسجيل الدخول ",style: titleText,)),
         ),
         body: Center(
           child: Column(

@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:student_follow_up_teacher/models/student_account.dart';
 
 class TeacherAccount {
   String userId;
@@ -15,6 +16,7 @@ class TeacherAccount {
   String version;
   DateTime expiryDate;
   bool expired;
+ var students;
 
   TeacherAccount({
     this.userId,
@@ -30,6 +32,8 @@ class TeacherAccount {
     @required this.version,
     this.expiryDate,
     this.expired,
+    this.students,
+
   });
 
   toMap() {
@@ -46,6 +50,8 @@ class TeacherAccount {
       "version": version,
       "expiryDate": expiryDate == null ? null : expiryDate.toIso8601String(),
       "expired": expired == null ? false : expired,
+      "students": students == null ?[] : students,
+
     };
   }
 
@@ -61,6 +67,8 @@ class TeacherAccount {
         accepted = dataSnapshot.value["accepted"],
         clerkCode = dataSnapshot.value["clerkCode"],
         version = dataSnapshot.value["version"],
-        expiryDate = DateTime.parse(dataSnapshot.value["expiryDate"]),
-        expired = dataSnapshot.value["expired"];
+        expiryDate = dataSnapshot.value["expiryDate"]==null?null:DateTime.parse(dataSnapshot.value["expiryDate"]),
+        expired = dataSnapshot.value["expired"],
+  students = dataSnapshot.value["students"];
+
 }

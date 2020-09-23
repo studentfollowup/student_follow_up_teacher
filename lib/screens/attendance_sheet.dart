@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:student_follow_up_teacher/colors/colors.dart';
+import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:student_follow_up_teacher/others/helper.dart';
 import '../models/lecture_attendance.dart';
 
 class AttendanceSheet extends StatefulWidget {
@@ -30,7 +31,8 @@ class _AttendanceSheetState extends State<AttendanceSheet> {
       appBar: AppBar(
         title: Align(
           alignment: Alignment.centerRight,
-          child: Text("سجل الحضور"),
+          child: Text("سجل الحضور",              style: titleText,
+          ),
         ),
       ),
       body: SingleChildScrollView(

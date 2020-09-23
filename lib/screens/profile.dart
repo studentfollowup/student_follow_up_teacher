@@ -5,11 +5,11 @@ import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/create_account.dart';
 import 'package:student_follow_up_teacher/widgets/drawer.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:student_follow_up_teacher/colors/colors.dart';
+import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ntp/ntp.dart';
 import 'teacher_case.dart';
-
+import '../others/helper.dart';
 class Profile extends StatefulWidget {
   final String teacherId;
 
@@ -40,6 +40,11 @@ class _ProfileState extends State<Profile> {
         .then((DataSnapshot dataSnapshot) {
       setState(() {
         currentUser = TeacherAccount.fromSnapshot(dataSnapshot);
+        print(currentUser.teacherCode);
+        print(currentUser.name);
+        print(currentUser. expired);
+        print(currentUser.clerkCode);
+
       });
       print("currentUser =>>>>>>> ${currentUser.clerkCode}");
     }).then((value) {
@@ -107,41 +112,43 @@ class _ProfileState extends State<Profile> {
     // TODO: implement initState
     super.initState();
 
-    _firebase.once().then((DataSnapshot dataSnapshot) {
-      weekNotification = dataSnapshot.value["weekNotify"];
-      endNotification = dataSnapshot.value["endNotify"];
-      print("week --> $weekNotification \n end --> $endNotification");
-    });
-    getTime().then((value) {
-      print("myTime $_myTime");
-      if (currentUser.expiryDate == _myTime ||
-          _myTime.isAfter(currentUser.expiryDate)) {
-        print("a5eraaaaaaaaaaaaaan");
-        if (currentUser.version == "النسخة التجريبية") {
-          currentUser.expired = true;
-          _firebaseRef.child(widget.teacherId).child("expired").set(true);
-          _firebaseRef.child(widget.teacherId).child("accepted").set(false);
-
-        } else if (currentUser.version == "النسخة الكاملة") {
-          showNotification(endNotification);
-          _firebaseRef.child(widget.teacherId).child("expired").set(true);
-          _firebaseRef.child(widget.teacherId).child("accepted").set(false);
-        }
-      } else {
-        int days = currentUser.expiryDate.difference(_myTime).inDays;
-        if (days >= 14 ) {
-          _firebaseRef.child(widget.teacherId).child("expired").set(true);
-          _firebaseRef.child(widget.teacherId).child("accepted").set(false);
-          showNotification(weekNotification);
-        }
-      }
-    });
-    print("id is =>>>>>> ${widget.teacherId}");
     getTeacher(widget.teacherId).then((value) {
       if (currentUser.expired == true) {
         expiredUser();
       }
+      else{
+        getTime().then((value) {
+          print("myTime $_myTime");
+        }).then((value) {
+          if (currentUser.expiryDate == _myTime ||
+              _myTime.isAfter(currentUser.expiryDate)) {
+            print("a5eraaaaaaaaaaaaaan");
+            if (currentUser.version == "النسخة التجريبية") {
+              currentUser.expired = true;
+              _firebaseRef.child(widget.teacherId).child("expired").set(true);
+              _firebaseRef.child(widget.teacherId).child("accepted").set(false);
+
+            } else if (currentUser.version == "النسخة الكاملة") {
+              showNotification(endNotification);
+              _firebaseRef.child(widget.teacherId).child("expired").set(true);
+              _firebaseRef.child(widget.teacherId).child("accepted").set(false);
+            }
+          } else {
+            int days = currentUser.expiryDate.difference(_myTime).inDays;
+            if (days >= 14 ) {
+              _firebaseRef.child(widget.teacherId).child("expired").set(true);
+              _firebaseRef.child(widget.teacherId).child("accepted").set(false);
+              showNotification(weekNotification);
+            }
+          }
+
+        });
+
+      }
+
     });
+
+    print("id is =>>>>>> ${widget.teacherId}");
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOS = new IOSInitializationSettings();
@@ -150,6 +157,11 @@ class _ProfileState extends State<Profile> {
       initSetttings,
       onSelectNotification: onSelectNotification,
     );
+    _firebase.once().then((DataSnapshot dataSnapshot) {
+      weekNotification = dataSnapshot.value["weekNotify"];
+      endNotification = dataSnapshot.value["endNotify"];
+      print("week --> $weekNotification \n end --> $endNotification");
+    });
   }
 
   @override
@@ -164,6 +176,7 @@ class _ProfileState extends State<Profile> {
                 "الحساب الشخصي",
                 textDirection: TextDirection.rtl,
                 textAlign: TextAlign.right,
+                style: titleText,
               )),
         ),
         drawer: DrawerWidget(),
@@ -212,8 +225,7 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Text(
                                 currentUser.name,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25),
+                                style: titleText,
                                 textAlign: TextAlign.right,
                               ),
                               Container(
@@ -247,7 +259,7 @@ class _ProfileState extends State<Profile> {
                     Expanded(
                       child: Container(
                         margin: EdgeInsets.symmetric(
-                            horizontal: deviceWidth * 0.06),
+                            horizontal: deviceWidth * 0.03),
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -359,7 +371,7 @@ class _ProfileState extends State<Profile> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 30, vertical: 8),
                                       child: Text(
-                                        " النسخة:${currentUser.version} ",
+                                        " ${currentUser.version} ",
                                         textDirection: TextDirection.rtl,
                                         textAlign: TextAlign.right,
                                         style: TextStyle(
@@ -440,8 +452,8 @@ class _ProfileState extends State<Profile> {
                                         onPressed: currentUser.accepted == false
                                             ? null
                                             : () {
-                                                showNotification(
-                                                    weekNotification);
+//                                                showNotification(
+//                                                    weekNotification);
                                                 showDialog(
                                                     context: context,
                                                     builder: (ctx) => Container(

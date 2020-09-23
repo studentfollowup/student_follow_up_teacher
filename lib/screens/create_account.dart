@@ -1,16 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
 import 'package:student_follow_up_teacher/screens/choose_version.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../models/teacher_account.dart';
 import 'package:firebase_database/firebase_database.dart';
-import '../colors/colors.dart';
+import '../others/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:true_time/true_time.dart';
 import 'package:ntp/ntp.dart';
+import '../others/helper.dart';
+import 'dart:io' as io;
+import 'package:student_follow_up_teacher/others/BaseState.dart';
+import 'package:student_follow_up_teacher/others/LoadingDialog.dart';
 
 class CreateAccount extends StatefulWidget {
   final TeacherAccount _teacher;
@@ -29,8 +36,13 @@ class _CreateAccountState extends State<CreateAccount> {
   var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   String titleText = "انشاء حساب جديد";
   String buttonText = "انشاء حساب";
-  bool _initialized = false;
-  DateTime _currentTime;
+
+  io.File _image;
+  bool isPickImage = false;
+  String selectedImageUrl = "";
+
+  final picker = ImagePicker();
+
 
   TeacherAccount teacherAccount = new TeacherAccount(
       teacherCode: null,
@@ -60,19 +72,13 @@ class _CreateAccountState extends State<CreateAccount> {
       _formKey.currentState.save();
       if (titleText == "تعديل الحساب الشخصى") {
         print("ana b3dl el profile");
-        print(teacherAccount.accepted);
-//        print(teacherAccount.teacherCode);
-//        print(teacherAccount.name);
-//        print(teacherAccount.userId);
-//        print(teacherAccount.educationLevels);
-//        print(teacherAccount.description);
-//        print(teacherAccount.numbers);
-//        print(teacherAccount.subject);
-//
+        print("${widget._teacher.userId}");
         teacherAccount.teacherCode = widget._teacher.teacherCode;
         teacherAccount.userId = widget._teacher.userId;
         teacherAccount.accepted = widget._teacher.accepted;
         teacherAccount.clerkCode = widget._teacher.clerkCode;
+        teacherAccount.expiryDate=widget._teacher.expiryDate;
+        teacherAccount.expired=widget._teacher.expired;
         print("this is accept => ${widget._teacher.accepted}");
         teacherAccount.version=widget._teacher.version;
 
@@ -81,7 +87,7 @@ class _CreateAccountState extends State<CreateAccount> {
             builder: (ctx) => Profile(teacherAccount.userId)));
       } else {
         _myTime = await NTP.now();
-
+print("i'm a new Teacher");
         teacherAccount.teacherCode = randomNumeric(5);
         teacherAccount.clerkCode = randomNumeric(5);
         teacherAccount.version = widget._teacher.version;
@@ -168,6 +174,7 @@ class _CreateAccountState extends State<CreateAccount> {
               titleText,
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.right,
+
             ),
           ),
         ),
@@ -183,219 +190,187 @@ class _CreateAccountState extends State<CreateAccount> {
                     key: _formKey,
                     child: Container(
                       margin: EdgeInsets.all(10),
-                      //padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-//                    child: SingleChildScrollView(
-                      child: Column(
-                        //    textDirection: TextDirection.rtl,
-                        // crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                        content: Directionality(
-                                          textDirection: TextDirection.rtl,
-                                          child: TextFormField(
-                                            //   initialValue: widget._teacher.imageUrl,
-                                            controller: imageController
-                                              ..text = widget._teacher.imageUrl,
-                                            decoration: InputDecoration(
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(15),
-                                                  ),
-                                                  //  gapPadding: 5,
-                                                  borderSide: BorderSide(
-                                                      color: primaryColor)),
-                                              prefixIcon: Icon(
-                                                Icons.photo,
-                                                color: primaryColor,
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                              ),
-                                              fillColor: Colors.white60,
-                                              filled: true,
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 5),
-                                              labelText: "رابط الصورة",
-                                              labelStyle:
-                                                  TextStyle(fontSize: 17),
-                                              // helperText: "hello"
-                                            ),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return "اضف رابط للصورة";
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                        actions: [
-                                          FlatButton(
-                                            child: Text("حفظ"),
-                                            onPressed: () {
-                                              widget._teacher.imageUrl =
-                                                  imageController.text;
-                                              teacherAccount.imageUrl =
-                                                  widget._teacher.imageUrl;
-                                              print(
-                                                  "image = ${teacherAccount.imageUrl}");
-                                              Navigator.of(context).pop();
-                                            },
-                                          )
-                                        ],
-                                      ));
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              //color: Colors.redprimaryColor                           width: deviceWidth * 0.6 + 20,
-                              height: deviceHeight * 0.3,
-                              alignment: Alignment.center,
-                              //padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 10),
-                              child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  child: (widget._teacher.imageUrl != null)
-                                      ? Image.network(
-                                          widget._teacher.imageUrl,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : Center(
-                                          child: Text(
-                                            "انقر هنا لوضع رابط الصورة ",
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                        )),
-                            ),
-                          ),
-                          Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    initialValue: widget._teacher.name,
-                                    textAlign: TextAlign.right,
-                                    // textDirection: TextDirection.rtl,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                          //  gapPadding: 5,
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      prefixIcon: Icon(
-                                        Icons.person,
-                                        color: primaryColor,
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                      ),
-                                      fillColor: Colors.white60,
-                                      filled: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      labelText: "اسم المعلم",
-                                      labelStyle: TextStyle(fontSize: 17),
-                                      // helperText: "hello"
-                                    ),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return "اسم خاطىء";
-                                      }
-                                      return null;
-                                    },
-                                    //keyboardType: TextInputType.text,
-                                    onSaved: (value) {
-                                      teacherAccount.name = value;
-                                    },
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    onSaved: (value) {
-                                      teacherAccount.subject = value;
-                                    },
-                                    textAlign: TextAlign.right,
-                                    // textDirection: TextDirection.rtl,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                          //  gapPadding: 5,
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      // hintText: "اسم المعلم",
-                                      //  hintStyle: TextStyle(fontSize: 15),
-                                      prefixIcon: Icon(
-                                        Icons.subject,
-                                        color: primaryColor,
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                      ),
-                                      fillColor: Colors.white60,
-                                      filled: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      labelText: "المادة",
-                                      labelStyle: TextStyle(fontSize: 17),
-                                      // helperText: "hello"
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                    initialValue: widget._teacher.subject,
 
-                                    validator: (value) {
-                                      if (value.isEmpty ||
-                                          value.runtimeType == int) {
-                                        return "قيمة خاطئة";
-                                      }
-                                      return null;
-                                    },
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            GestureDetector(
+                             child: Container(
+                                margin: EdgeInsets.all(10),
+                                width: double.infinity,
+                                decoration: new BoxDecoration(
+                                    border: new Border.all(
+                                        color: primaryColor),
+                                    borderRadius: BorderRadius.circular(7.0)),
+                                height: 200,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: isPickImage
+                                      ?/* kIsWeb?Image.memory(uploadedWebImage):*/CachedNetworkImage(
+//                                    placeholder: (context, url) =>
+//                                        Opacity(
+//                                          opacity: 0.5,
+//                                          child: Image.asset(
+//                                            'images/logo.png',
+//                                            width: 100,
+//                                            height: MediaQuery
+//                                                .of(context)
+//                                                .size
+//                                                .height,
+//                                          ),
+//                                        ),
+                                    imageUrl:
+                                    '$selectedImageUrl',
+                                    width: 100,
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height,
+                                    fit: BoxFit.contain,
+                                  )
+                                      : (titleText == "تعديل الحساب الشخصى")?
+                                  CachedNetworkImage(imageUrl:
+                                  '${widget._teacher.imageUrl}',
+                                    width: 100,
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height,
+                                    fit: BoxFit.contain,)
+                                  :Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_a_photo,
+                                        color: primaryColor,
+                                      ),
+                                      SizedBox(height: 10,),
+                                      Text("اختر صورة", style: contrastText,)
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    initialValue:
-                                        widget._teacher.educationLevels,
-                                    onSaved: (value) {
-                                      teacherAccount.educationLevels = value;
-                                    },
-                                    textAlign: TextAlign.right,
-                                    decoration: InputDecoration(
+                                ),
+                              ),
+                              onTap: () {
+                                /*  kIsWeb?pickImageFromComputer():*/showImageModal();
+                              },
+                            ),
+                        SizedBox(
+                          height: 10,
+                        ),
+//                              onTap: () {
+//                                showDialog(
+//                                    barrierDismissible: false,
+//                                    context: context,
+//                                    builder: (ctx) => AlertDialog(
+//                                          content: Directionality(
+//                                            textDirection: TextDirection.rtl,
+//                                            child: TextFormField(
+//                                              //   initialValue: widget._teacher.imageUrl,
+//                                              controller: imageController
+//                                                ..text = widget._teacher.imageUrl,
+//                                              decoration: InputDecoration(
+//                                                focusedBorder: OutlineInputBorder(
+//                                                    borderRadius:
+//                                                        BorderRadius.all(
+//                                                      Radius.circular(15),
+//                                                    ),
+//                                                    //  gapPadding: 5,
+//                                                    borderSide: BorderSide(
+//                                                        color: primaryColor)),
+//                                                prefixIcon: Icon(
+//                                                  Icons.photo,
+//                                                  color: primaryColor,
+//                                                  textDirection:
+//                                                      TextDirection.rtl,
+//                                                ),
+//                                                border: OutlineInputBorder(
+//                                                  borderRadius: BorderRadius.all(
+//                                                      Radius.circular(15)),
+//                                                ),
+//                                                fillColor: Colors.white60,
+//                                                filled: true,
+//                                                contentPadding:
+//                                                    EdgeInsets.symmetric(
+//                                                        horizontal: 5),
+//                                                labelText: "رابط الصورة",
+//                                                labelStyle:
+//                                                    TextStyle(fontSize: 17),
+//                                                // helperText: "hello"
+//                                              ),
+//                                              validator: (value) {
+//                                                if (value.isEmpty) {
+//                                                  return "اضف رابط للصورة";
+//                                                }
+//                                                return null;
+//                                              },
+//                                            ),
+//                                          ),
+//                                          actions: [
+//                                            FlatButton(
+//                                              child: Text("حفظ"),
+//                                              onPressed: () {
+//                                                widget._teacher.imageUrl =
+//                                                    imageController.text;
+//                                                teacherAccount.imageUrl =
+//                                                    widget._teacher.imageUrl;
+//                                                print(
+//                                                    "image = ${teacherAccount.imageUrl}");
+//                                                Navigator.of(context).pop();
+//                                              },
+//                                            )
+//                                          ],
+//                                        ));
+//                              },
+//                              child: Container(
+//                                decoration: BoxDecoration(
+//                                    borderRadius:
+//                                        BorderRadius.all(Radius.circular(20))),
+//                                //color: Colors.redprimaryColor                           width: deviceWidth * 0.6 + 20,
+//                                height: deviceHeight * 0.3,
+//                                alignment: Alignment.center,
+//                                //padding: EdgeInsets.all(8),
+//                                margin: EdgeInsets.symmetric(
+//                                    horizontal: 12, vertical: 10),
+//                                child: ClipRRect(
+//                                    borderRadius:
+//                                        BorderRadius.all(Radius.circular(20)),
+//                                    child: (widget._teacher.imageUrl != null)
+//                                        ? Image.network(
+//                                            widget._teacher.imageUrl,
+//                                            fit: BoxFit.fill,
+//                                          )
+//                                        : Center(
+//                                            child: Text(
+//                                              "انقر هنا لوضع رابط الصورة ",
+//                                              style: TextStyle(fontSize: 18),
+//                                            ),
+//                                          )),
+//                              ),
+//                            ),
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      initialValue: widget._teacher.name,
+                                      textAlign: TextAlign.right,
+                                      // textDirection: TextDirection.rtl,
+                                      decoration: InputDecoration(
                                         focusedBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(15),
                                             ),
-                                            borderSide: BorderSide(
-                                                color: primaryColor)),
+                                            //  gapPadding: 5,
+                                            borderSide:
+                                                BorderSide(color: primaryColor)),
                                         prefixIcon: Icon(
-                                          Icons.school,
+                                          Icons.person,
                                           color: primaryColor,
                                           textDirection: TextDirection.rtl,
                                         ),
@@ -406,142 +381,234 @@ class _CreateAccountState extends State<CreateAccount> {
                                         fillColor: Colors.white60,
                                         filled: true,
                                         contentPadding:
-                                            EdgeInsets.symmetric(horizontal: 8),
-                                        labelText: "المراحل الدراسية ",
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        labelText: "اسم المعلم",
                                         labelStyle: TextStyle(fontSize: 17),
-                                        helperText:
-                                            "مثال: الصف الاول ، الصف الثانى  "),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return "قيمة خاطئة";
-                                      }
-                                      return null;
-                                    },
-                                    keyboardType: TextInputType.text,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    initialValue: widget._teacher.description,
-
-                                    textAlign: TextAlign.right,
-                                    // textDirection: TextDirection.rtl,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                          //  gapPadding: 5,
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      prefixIcon: Icon(
-                                        Icons.description,
-                                        color: primaryColor,
-                                        textDirection: TextDirection.rtl,
+                                        // helperText: "hello"
                                       ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                      ),
-                                      fillColor: Colors.white60,
-                                      filled: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      labelText: "نبذة",
-                                      labelStyle: TextStyle(fontSize: 17),
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return "اسم خاطىء";
+                                        }
+                                        return null;
+                                      },
+                                      //keyboardType: TextInputType.text,
+                                      onSaved: (value) {
+                                        teacherAccount.name = value;
+                                      },
                                     ),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return "قيمة خاطئة";
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      teacherAccount.description = value;
-                                    },
-                                    keyboardType: TextInputType.multiline,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    initialValue: widget._teacher.numbers,
-
-                                    textAlign: TextAlign.right,
-                                    // textDirection: TextDirection.rtl,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
-                                          //  gapPadding: 5,
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      prefixIcon: Icon(
-                                        Icons.phone,
-                                        color: primaryColor,
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                      ),
-                                      fillColor: Colors.white60,
-                                      filled: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      labelText: "ارقام التليفون",
-                                      labelStyle: TextStyle(fontSize: 17),
-                                      // helperText: "hello"
+                                    SizedBox(
+                                      height: 10,
                                     ),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return "قيمة خاطئة";
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      teacherAccount.numbers = value;
-                                    },
-                                    keyboardType: TextInputType.phone,
-                                  ),
-                                ],
+                                    TextFormField(
+                                      onSaved: (value) {
+                                        teacherAccount.subject = value;
+                                      },
+                                      textAlign: TextAlign.right,
+                                      // textDirection: TextDirection.rtl,
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(15),
+                                            ),
+                                            //  gapPadding: 5,
+                                            borderSide:
+                                                BorderSide(color: primaryColor)),
+                                        // hintText: "اسم المعلم",
+                                        //  hintStyle: TextStyle(fontSize: 15),
+                                        prefixIcon: Icon(
+                                          Icons.subject,
+                                          color: primaryColor,
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15)),
+                                        ),
+                                        fillColor: Colors.white60,
+                                        filled: true,
+                                        contentPadding:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        labelText: "المادة",
+                                        labelStyle: TextStyle(fontSize: 17),
+                                        // helperText: "hello"
+                                      ),
+                                      keyboardType: TextInputType.text,
+                                      initialValue: widget._teacher.subject,
+
+                                      validator: (value) {
+                                        if (value.isEmpty ||
+                                            value.runtimeType == int) {
+                                          return "قيمة خاطئة";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                      initialValue:
+                                          widget._teacher.educationLevels,
+                                      onSaved: (value) {
+                                        teacherAccount.educationLevels = value;
+                                      },
+                                      textAlign: TextAlign.right,
+                                      decoration: InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(15),
+                                              ),
+                                              borderSide: BorderSide(
+                                                  color: primaryColor)),
+                                          prefixIcon: Icon(
+                                            Icons.school,
+                                            color: primaryColor,
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                          ),
+                                          fillColor: Colors.white60,
+                                          filled: true,
+                                          contentPadding:
+                                              EdgeInsets.symmetric(horizontal: 8),
+                                          labelText: "المراحل الدراسية ",
+                                          labelStyle: TextStyle(fontSize: 17),
+                                          helperText:
+                                              "مثال: الصف الاول الثانوى ، الصف الثانى الثانوى "),
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return "قيمة خاطئة";
+                                        }
+                                        return null;
+                                      },
+                                      keyboardType: TextInputType.text,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                      initialValue: widget._teacher.description,
+
+                                      textAlign: TextAlign.right,
+                                      // textDirection: TextDirection.rtl,
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(15),
+                                            ),
+                                            //  gapPadding: 5,
+                                            borderSide:
+                                                BorderSide(color: primaryColor)),
+                                        prefixIcon: Icon(
+                                          Icons.description,
+                                          color: primaryColor,
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15)),
+                                        ),
+                                        fillColor: Colors.white60,
+                                        filled: true,
+                                        contentPadding:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        labelText: "نبذة",
+                                        labelStyle: TextStyle(fontSize: 17),
+                                      ),
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return "قيمة خاطئة";
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        teacherAccount.description = value;
+                                      },
+                                      keyboardType: TextInputType.multiline,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                      initialValue: widget._teacher.numbers,
+
+                                      textAlign: TextAlign.right,
+                                      // textDirection: TextDirection.rtl,
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(15),
+                                            ),
+                                            //  gapPadding: 5,
+                                            borderSide:
+                                                BorderSide(color: primaryColor)),
+                                        prefixIcon: Icon(
+                                          Icons.phone,
+                                          color: primaryColor,
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15)),
+                                        ),
+                                        fillColor: Colors.white60,
+                                        filled: true,
+                                        contentPadding:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        labelText: "ارقام التليفون",
+                                        labelStyle: TextStyle(fontSize: 17),
+                                        // helperText: "hello"
+                                      ),
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return "قيمة خاطئة";
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        teacherAccount.numbers = value;
+                                      },
+                                      keyboardType: TextInputType.phone,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
-                              child: Builder(
-                                builder: (ctx) => Container(
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
-                                          colors: [
-                                        primaryColor.withRed(300),
-                                        primaryColor.withGreen(200),
-                                        primaryColor.withBlue(250)
-                                      ])),
-                                  width: deviceWidth * 0.4,
-                                  child: RaisedButton(
-                                      color: primaryColor,
-                                      textColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 15),
-                                      elevation: 3,
-                                      child: Text(
-                                        buttonText,
-                                        style: TextStyle(fontSize: 18),
-                                        textAlign: TextAlign.center,
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                      onPressed: () {
-                                        onSave();
+                            SizedBox(
+                              height: 15,
+                            ),
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50)),
+                                child: Builder(
+                                  builder: (ctx) => Container(
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [
+                                          primaryColor.withRed(300),
+                                          primaryColor.withGreen(200),
+                                          primaryColor.withBlue(250)
+                                        ])),
+                                    width: deviceWidth * 0.4,
+                                    child: RaisedButton(
+                                        color: primaryColor,
+                                        textColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 15),
+                                        elevation: 3,
+                                        child: Text(
+                                          buttonText,
+                                          style: TextStyle(fontSize: 18),
+                                          textAlign: TextAlign.center,
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                        onPressed: () {
+                                          onSave();
 //                                      if(saved==true){
 //                                        Scaffold.of(context).showSnackBar(SnackBar(
 //                                          content: Text(
@@ -549,10 +616,11 @@ class _CreateAccountState extends State<CreateAccount> {
 //                                            textAlign: TextAlign.center,
 //                                          ),
 //                                        ));
-                                      }),
-                                ),
-                              ))
-                        ],
+                                        }),
+                                  ),
+                                ))
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -562,5 +630,93 @@ class _CreateAccountState extends State<CreateAccount> {
             ),
           ),
         ));
+  }
+  showImageModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+              height: 100,
+              color: Colors.white,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      IconButton(
+                          onPressed: () =>
+                              pickImageFromGallery(ImageSource.camera),
+                          icon: Icon(
+                            Icons.camera_alt,
+                            size: 30,
+                            color: primaryColor,
+                          )),
+                      Text(
+                        'Camera',
+                        style: TextStyle(
+                            fontSize: 15.0,
+//                            fontFamily: 'Poppins',
+                            color: primaryColor),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      IconButton(
+                          onPressed: () =>
+                              pickImageFromGallery(ImageSource.gallery),
+                          icon: Icon(
+                            Icons.photo_album,
+                            size: 30,
+                            color: primaryColor,
+                          )),
+                      Text(
+                        'Gallery',
+                        style: TextStyle(
+                            fontSize: 15.0,
+//                            fontFamily: 'Poppins',
+                            color: primaryColor),
+                      )
+                    ],
+                  )
+                ],
+              ));
+        });
+  }
+  pickImageFromGallery(ImageSource source) async {
+    final pickedFile =
+    await picker.getImage(source: source, maxWidth: 500, maxHeight: 500);
+    _image = io.File(pickedFile.path);
+    Navigator.pop(context);
+    _uploadImage();
+  }
+  _uploadImage() async {
+
+    LoadingDialog loadingDialog = LoadingDialog();
+    loadingDialog.show();
+
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('teacher_images/${DateTime.now()}');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        selectedImageUrl = fileURL;
+      });
+      if(selectedImageUrl!=null){
+       teacherAccount.imageUrl=selectedImageUrl;
+       print(selectedImageUrl);
+      }
+      loadingDialog.hide();
+     // showSuccessMsg("Image Uploaded successfully");
+      isPickImage = true;
+      setState(() {});
+
+    }).catchError((){
+     // showErrorMsg("Error, check internet connection and try again");
+    });
   }
 }

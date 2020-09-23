@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:student_follow_up_teacher/colors/colors.dart';
+import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:student_follow_up_teacher/models/new_center.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:student_follow_up_teacher/others/helper.dart';
+import 'package:student_follow_up_teacher/widgets/drawer.dart';
 import 'package:toast/toast.dart';
 
 class AddCenter extends StatefulWidget {
@@ -43,8 +45,12 @@ class _AddCenterState extends State<AddCenter> {
               alignment: Alignment.centerRight,
               child: Text(
                 "اضافة سنتر",
+                style: titleText,
+
               )),
         ),
+        drawer: DrawerWidget(),
+
         body: Center(
           child: Form(
               key: _formKey,
@@ -78,9 +84,7 @@ class _AddCenterState extends State<AddCenter> {
                             filled: true,
                             contentPadding: EdgeInsets.symmetric(horizontal: 5),
                             labelText: "اسم السنتر",
-//                            labelStyle:
-//                                TextStyle(color: primaryColor , fontSize: 17),
-//                            // helperText: "hello"
+//
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -116,9 +120,7 @@ class _AddCenterState extends State<AddCenter> {
                             filled: true,
                             contentPadding: EdgeInsets.symmetric(horizontal: 5),
                             labelText: "المرحلة الدراسية",
-//                            labelStyle:
-//                                TextStyle(color: primaryColor , fontSize: 17),
-//                            // helperText: "hello"
+//
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -139,7 +141,6 @@ class _AddCenterState extends State<AddCenter> {
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(15),
                                 ),
-                                //  gapPadding: 5,
                                 borderSide: BorderSide(color: primaryColor)),
                             prefixIcon: Icon(
                               Icons.payment,
@@ -154,9 +155,7 @@ class _AddCenterState extends State<AddCenter> {
                             filled: true,
                             contentPadding: EdgeInsets.symmetric(horizontal: 5),
                             labelText: "قيمة المحاضرة",
-//                            labelStyle:
-//                                TextStyle(color: primaryColor , fontSize: 17),
-//                            // helperText: "hello"
+//
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
