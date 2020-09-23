@@ -1,6 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'centers.dart';
+//TODO: uncomment next Statement
+import 'package:firebase/firebase.dart';
 
 class StudentAccount {
   String studentId;
@@ -43,17 +44,34 @@ class StudentAccount {
 
   StudentAccount.fromSnapshot(DataSnapshot dataSnapshot)
       : studentId = dataSnapshot.key,
-        studentCode = dataSnapshot.value["studentCode"],
+  //TODO:uncomment for web version
+/*
+      studentCode = dataSnapshot.value["studentCode"],
         imageUrl = dataSnapshot.value["imageUrl"],
-        name = dataSnapshot.value["name"],
-        //  subject = dataSnapshot.value["subject"],
-        schoolName = dataSnapshot.value["schoolName"],
-        studentPhone = dataSnapshot.value["studentPhone"],
-        educationalLevel = dataSnapshot.value["educationalLevel"],
-        parentPhone = dataSnapshot.value["parentPhone"],
+        name =dataSnapshot.value["name"],
+        schoolName =dataSnapshot.value["schoolName"],
+        studentPhone =dataSnapshot.value["studentPhone"],
+        educationalLevel =dataSnapshot.value["educationalLevel"],
+        parentPhone =dataSnapshot.value["parentPhone"],
         groupName = dataSnapshot.value["groupName"],
-        accepted = dataSnapshot.value["accepted"],
-        centers =Map<dynamic,dynamic>.from(dataSnapshot.value["centers"] == null
+        accepted =dataSnapshot.value["accepted"],
+        centers =dataSnapshot.value["centers"] == null
             ? []
             : dataSnapshot.value["centers"]);
+
+
+ */
+        studentCode = dataSnapshot.val()["studentCode"],
+        imageUrl = dataSnapshot.val()["imageUrl"],
+        name =dataSnapshot.val()["name"],
+        schoolName =dataSnapshot.val()["schoolName"] ,
+        studentPhone = dataSnapshot.val()["studentPhone"],
+        educationalLevel =dataSnapshot.val()["educationalLevel"],
+        parentPhone =dataSnapshot.val()["parentPhone"],
+        groupName = dataSnapshot.val()["groupName"],
+        accepted =dataSnapshot.val()["accepted"],
+        centers =Map<dynamic,dynamic>.from(dataSnapshot.val()["centers"]== null
+            ? []
+            :dataSnapshot.val()["centers"]);
+
 }

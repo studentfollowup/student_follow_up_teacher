@@ -1,4 +1,6 @@
-import 'package:firebase_database/firebase_database.dart';
+//TODO: uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/models/student_account.dart';
@@ -38,12 +40,19 @@ class _CenterStudentsState extends State<CenterStudents> {
   List<Centers> l = [];
   Centers centers = new Centers();
   List<Centers> choosenCenter = [];
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+  DatabaseReference _firebase = database().ref("teacher accounts");
+  DatabaseReference _firebaseObject = database().ref("teacher accounts");
+
+  //TODO: uncomment next section
+
+  /*
   var _firebaseRef = FirebaseDatabase().reference().child("teacher accounts");
 
   final _firebase = FirebaseDatabase().reference().child("student accounts");
   var _firebaseObject =
       FirebaseDatabase().reference().child("student accounts");
-
+*/
   Future<void> getTeacherId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     id = sharedPreferences.get("teacherId");
@@ -52,17 +61,27 @@ class _CenterStudentsState extends State<CenterStudents> {
   @override
   void initState() {
     getTeacherId().then((value) {
-      _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
+      //TODO: uncomment next section
+
+      /*_firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
         teacherName = dataSnapshot.value["name"];
 //        centers.id="-khgohgodg26fhdi";
 
 ////        print(teacherName);
+      });*/
+      _firebaseRef.child(id).once("value").then((event) {
+        teacherName = event.snapshot.val()["name"];
+//        centers.id="-khgohgodg26fhdi";
+
+////        print(teacherName);
       });
-      _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
+      //TODO: uncomment next section
+
+      /*_firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
         students = dataSnapshot.value["students"];
-      }).then((value) {
+      })*/_firebaseRef.child(id).once("value").then((value) {
         _firebase.onChildAdded.listen((studentEvent) {
-          if(students!=null) {
+          if (students != null) {
             students.forEach((element) {
               if (studentEvent.snapshot.key == element) {
                 _firebaseObject
@@ -110,11 +129,9 @@ class _CenterStudentsState extends State<CenterStudents> {
                 });
               }
             });
-          }
-          else{
+          } else {
             setState(() {
-              isLoading
-              =false;
+              isLoading = false;
             });
           }
         });
@@ -127,9 +144,8 @@ class _CenterStudentsState extends State<CenterStudents> {
 
   void showBottomSheet(StudentAccount studentAccount) {
     scafoldKey.currentState.showBottomSheet((context) {
-
       return GestureDetector(
-        onTap: (){
+        onTap: () {
           Navigator.pop(context);
         },
         child: new Container(
@@ -144,8 +160,7 @@ class _CenterStudentsState extends State<CenterStudents> {
           ),
           child: SingleChildScrollView(
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.3+20,
-
+              height: MediaQuery.of(context).size.height * 0.3 + 20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -153,8 +168,8 @@ class _CenterStudentsState extends State<CenterStudents> {
 //              mainAxisAlignment: MainAxisAlignment.start,
                     textDirection: TextDirection.rtl,
                     children: [
-                      Text(" :الاسم",style: contrastText),
-                      Text(studentAccount.name,style: contrastText),
+                      Text(" :الاسم", style: contrastText),
+                      Text(studentAccount.name, style: contrastText),
                     ],
                   ),
                   SizedBox(
@@ -163,8 +178,8 @@ class _CenterStudentsState extends State<CenterStudents> {
                   Row(
                     textDirection: TextDirection.rtl,
                     children: [
-                      Text(" :الكود",style: contrastText),
-                      Text(studentAccount.studentCode,style: contrastText),
+                      Text(" :الكود", style: contrastText),
+                      Text(studentAccount.studentCode, style: contrastText),
                     ],
                   ),
                   SizedBox(
@@ -173,8 +188,9 @@ class _CenterStudentsState extends State<CenterStudents> {
                   Row(
                     textDirection: TextDirection.rtl,
                     children: [
-                      Text("  :المرحلة الدراسية",style: contrastText),
-                      Text(studentAccount.educationalLevel,style: contrastText),
+                      Text("  :المرحلة الدراسية", style: contrastText),
+                      Text(studentAccount.educationalLevel,
+                          style: contrastText),
                     ],
                   ),
                   SizedBox(
@@ -183,8 +199,8 @@ class _CenterStudentsState extends State<CenterStudents> {
                   Row(
                     textDirection: TextDirection.rtl,
                     children: [
-                      Text(" :اسم المدرسة ",style: contrastText),
-                      Text(studentAccount.schoolName,style: contrastText),
+                      Text(" :اسم المدرسة ", style: contrastText),
+                      Text(studentAccount.schoolName, style: contrastText),
                     ],
                   ),
                   SizedBox(
@@ -193,8 +209,8 @@ class _CenterStudentsState extends State<CenterStudents> {
                   Row(
                     textDirection: TextDirection.rtl,
                     children: [
-                      Text(" :رقم الهاتف",style: contrastText),
-                      Text(studentAccount.studentPhone,style: contrastText),
+                      Text(" :رقم الهاتف", style: contrastText),
+                      Text(studentAccount.studentPhone, style: contrastText),
                     ],
                   ),
                 ],
@@ -217,12 +233,10 @@ class _CenterStudentsState extends State<CenterStudents> {
           child: Text(
             "الطلاب المسجلين",
             style: titleText,
-
             textAlign: TextAlign.right,
           ),
         ),
       ),
-
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -283,9 +297,7 @@ class _CenterStudentsState extends State<CenterStudents> {
                                       }
                                     });
                                   }
-                                }
-
-                                else if (!student.name.startsWith(value, 0) ||
+                                } else if (!student.name.startsWith(value, 0) ||
                                     (!student.studentCode
                                         .startsWith(value, 0))) {
                                   searchList.forEach((element) {
@@ -482,7 +494,6 @@ class _CenterStudentsState extends State<CenterStudents> {
 //                                                        .groupName);
 
                                                     if (searchList.isNotEmpty) {
-
                                                       _firebase
                                                           .child(
                                                               searchList[index]
@@ -516,7 +527,21 @@ class _CenterStudentsState extends State<CenterStudents> {
                                                               .toString())
                                                           .child(teacherName)
                                                           .set(false);
-                                                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("تم التعطيل",textAlign: TextAlign.right,style: TextStyle(fontSize: 15),),backgroundColor: Colors.green,duration: Duration(seconds: 2),));
+                                                      Scaffold.of(context)
+                                                          .showSnackBar(
+                                                              SnackBar(
+                                                        content: Text(
+                                                          "تم التعطيل",
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                          style: TextStyle(
+                                                              fontSize: 15),
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.green,
+                                                        duration: Duration(
+                                                            seconds: 2),
+                                                      ));
 
                                                       setState(() {
                                                         centerStudents

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../others/colors.dart';
-import 'package:firebase_database/firebase_database.dart';
+//TODO : uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../others/helper.dart';
@@ -16,8 +18,10 @@ class _SignInState extends State<SignIn> {
   final codeController = TextEditingController();
 
   List<TeacherAccount> _teachers = [];
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+//TODO : uncomment next statement
 
-  var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
+  //var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   TeacherAccount teacher ;
   int index;
 
@@ -51,7 +55,9 @@ class _SignInState extends State<SignIn> {
   void initState() {
 
     _firebaseRef.remove();
-    onChildAdded(Event event) {
+    //TODO : uncomment next statement
+
+    onChildAdded(/*Event*/ event) {
       if(event.snapshot.value["expiryDate"]!=null){
       _teachers.add(TeacherAccount.fromSnapshot(event.snapshot));
     }}

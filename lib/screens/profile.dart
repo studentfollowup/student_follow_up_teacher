@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/create_account.dart';
 import 'package:student_follow_up_teacher/widgets/drawer.dart';
-import 'package:firebase_database/firebase_database.dart';
+//TODO:uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ntp/ntp.dart';
@@ -26,20 +28,35 @@ class _ProfileState extends State<Profile> {
   String endNotification;
   TeacherAccount currentUser;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+  DatabaseReference _firebase = database().ref('admin msgs notification').child("full version");
 
+//TODO:uncomment next section
+  /*
   final _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   final _firebase = FirebaseDatabase()
       .reference()
       .child('admin msgs notification')
       .child("full version");
-
+*/
   Future<void> getTeacher(String teacherId) async {
-    await _firebaseRef
+    //TODO:uncomment next section
+
+   /* await _firebaseRef
         .child(teacherId)
         .once()
         .then((DataSnapshot dataSnapshot) {
       setState(() {
         currentUser = TeacherAccount.fromSnapshot(dataSnapshot);
+
+      });
+    });*/
+    await _firebaseRef
+        .child(teacherId)
+        .once("value")
+        .then((event) {
+      setState(() {
+        currentUser = TeacherAccount.fromSnapshot(event.snapshot);
 
       });
     });
@@ -145,9 +162,16 @@ class _ProfileState extends State<Profile> {
       initSetttings,
       onSelectNotification: onSelectNotification,
     );
-    _firebase.once().then((DataSnapshot dataSnapshot) {
+    //TODO:uncomment next section
+
+   /* _firebase.once().then((DataSnapshot dataSnapshot) {
       weekNotification = dataSnapshot.value["weekNotify"];
       endNotification = dataSnapshot.value["endNotify"];
+    });*/
+
+    _firebase.once("value").then((event) {
+      weekNotification = event.snapshot.val()["weekNotify"];
+      endNotification =  event.snapshot.val()["endNotify"];
     });
   }
 

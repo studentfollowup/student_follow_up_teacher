@@ -1,9 +1,18 @@
 //import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
-import 'screens/create_account.dart';
-import 'screens/profile.dart';
-void main() {
+//TODO: uncomment next statement
+
+import 'package:firebase/firebase.dart';
+
+void main(){
+//TODO: ucomment next block
+initializeApp(
+      apiKey: "AIzaSyBR_xfNOECWLtt9dcPUfuGHamxKcsStgQg",
+      authDomain: "student-followup-3c342.firebaseapp.com",
+      databaseURL: "https://student-followup-3c342.firebaseio.com",
+      projectId: "student-followup-3c342",
+      storageBucket: "student-followup-3c342.appspot.com");
 
   runApp(MyApp());
 }

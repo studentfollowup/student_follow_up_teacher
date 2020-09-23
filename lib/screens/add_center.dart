@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
-import 'package:firebase_database/firebase_database.dart';
+//TODO: uncomment next statement
+
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'package:student_follow_up_teacher/models/new_center.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/others/helper.dart';
@@ -29,8 +32,9 @@ class _AddCenterState extends State<AddCenter> {
   ];
 
   final _formKey = GlobalKey<FormState>();
-
-  final _firebase = FirebaseDatabase().reference().child("teacher accounts");
+//TODO: uncomment next statement
+//  final _firebase = FirebaseDatabase().reference().child("teacher accounts");
+  DatabaseReference _ref = database().ref("teacher accounts");
 
   Future<void> onSave() async {
     if (_formKey.currentState.validate()) {
@@ -41,7 +45,7 @@ class _AddCenterState extends State<AddCenter> {
       Toast.show("تم اضافة السنتر", context,
           duration: 3, gravity: Toast.CENTER);
 
-      _firebase.child(currentUserId).child("centers").push().set(_newCenter.toMap());
+      _ref.child(currentUserId).child("centers").push().set(_newCenter.toMap());
     }
   }
 

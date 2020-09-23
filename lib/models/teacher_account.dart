@@ -1,7 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
-import 'package:student_follow_up_teacher/models/student_account.dart';
-
+//TODO: uncomment next Statement
+import 'package:firebase/firebase.dart';
 class TeacherAccount {
   String userId;
   String teacherCode;
@@ -56,6 +56,10 @@ class TeacherAccount {
   }
 
   TeacherAccount.fromSnapshot(DataSnapshot dataSnapshot)
+
+    //TODO:uncomment for web version
+
+    /*
       : userId = dataSnapshot.key,
         teacherCode = dataSnapshot.value["teacherCode"],
         imageUrl = dataSnapshot.value["imageUrl"],
@@ -70,5 +74,21 @@ class TeacherAccount {
         expiryDate = dataSnapshot.value["expiryDate"]==null?null:DateTime.parse(dataSnapshot.value["expiryDate"]),
         expired = dataSnapshot.value["expired"],
   students = dataSnapshot.value["students"];
-
+*/
+    : userId = dataSnapshot.key,
+    teacherCode = dataSnapshot.val()["teacherCode"],
+    imageUrl = dataSnapshot.val()["imageUrl"],
+    name = dataSnapshot.val()["name"],
+    subject = dataSnapshot.val()["subject"],
+    description = dataSnapshot.val()["description"],
+    numbers = dataSnapshot.val()["numbers"],
+    educationLevels = dataSnapshot.val()["educationLevels"],
+    accepted = dataSnapshot.val()["accepted"],
+    expiryDate = dataSnapshot.val()["expiryDate"] == null
+    ? null
+        : DateTime.parse(dataSnapshot.val()["expiryDate"]),
+    clerkCode = dataSnapshot.val()["clerkCode"],
+    version = dataSnapshot.val()["version"],
+    expired = dataSnapshot.val()["expired"],
+    students = dataSnapshot.val()["students"];
 }

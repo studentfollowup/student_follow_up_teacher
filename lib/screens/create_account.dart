@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,9 @@ import 'package:random_string/random_string.dart';
 import 'package:student_follow_up_teacher/screens/choose_version.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../models/teacher_account.dart';
-import 'package:firebase_database/firebase_database.dart';
+//TODO: uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import '../others/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
@@ -18,6 +21,12 @@ import '../others/helper.dart';
 import 'dart:io' as io;
 import 'package:student_follow_up_teacher/others/BaseState.dart';
 import 'package:student_follow_up_teacher/others/LoadingDialog.dart';
+// TODO: uncomment next block
+ import 'package:universal_html/prefer_universal/html.dart' as html;
+ import 'package:firebase/firebase.dart' as fb;
+import 'dart:html';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:typed_data';
 
 class CreateAccount extends StatefulWidget {
   final TeacherAccount _teacher;
@@ -33,7 +42,9 @@ class _CreateAccountState extends State<CreateAccount> {
   final _formKey = GlobalKey<FormState>();
   final imageController = TextEditingController();
   bool saved = false;
-  var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+//TODO: uncomment next statement
+//  var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   String titleText = "انشاء حساب جديد";
   String buttonText = "انشاء حساب";
 
@@ -145,12 +156,21 @@ class _CreateAccountState extends State<CreateAccount> {
       setState(() {
           titleText = "تعديل الحساب الشخصى";
           buttonText = "حفظ";
-        _firebaseRef
+          //TODO:uncomment next section
+       /* _firebaseRef
             .child(widget._teacher.userId)
             .once()
             .then((DataSnapshot dataSnapshot) {
           teacherAccount = TeacherAccount.fromSnapshot(dataSnapshot);
         });
+
+        */
+          _firebaseRef
+              .child(widget._teacher.userId)
+              .once("value")
+              .then((event) {
+            teacherAccount = TeacherAccount.fromSnapshot(event.snapshot);
+          });
         teacherAccount.imageUrl = widget._teacher.imageUrl;
       });
     }
@@ -209,19 +229,21 @@ class _CreateAccountState extends State<CreateAccount> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: isPickImage
-                                      ?/* kIsWeb?Image.memory(uploadedWebImage):*/CachedNetworkImage(
-//                                    placeholder: (context, url) =>
-//                                        Opacity(
-//                                          opacity: 0.5,
-//                                          child: Image.asset(
-//                                            'images/logo.png',
-//                                            width: 100,
-//                                            height: MediaQuery
-//                                                .of(context)
-//                                                .size
-//                                                .height,
-//                                          ),
-//                                        ),
+                                  // TODO: uncomment next statement
+
+                                      ? kIsWeb?Image.memory(uploadedWebImage):CachedNetworkImage(
+                                    placeholder: (context, url) =>
+                                        Opacity(
+                                          opacity: 0.5,
+                                          child: Image.asset(
+                                            'images/learning.png',
+                                            width: 100,
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height,
+                                          ),
+                                        ),
                                     imageUrl:
                                     '$selectedImageUrl',
                                     width: 100,
@@ -254,102 +276,15 @@ class _CreateAccountState extends State<CreateAccount> {
                                 ),
                               ),
                               onTap: () {
-                                /*  kIsWeb?pickImageFromComputer():*/showImageModal();
+                                // TODO: uncomment next statement
+
+                              /*  kIsWeb?*/pickImageFromComputer()/*:showImageModal()*/;
                               },
                             ),
                         SizedBox(
                           height: 10,
                         ),
-//                              onTap: () {
-//                                showDialog(
-//                                    barrierDismissible: false,
-//                                    context: context,
-//                                    builder: (ctx) => AlertDialog(
-//                                          content: Directionality(
-//                                            textDirection: TextDirection.rtl,
-//                                            child: TextFormField(
-//                                              //   initialValue: widget._teacher.imageUrl,
-//                                              controller: imageController
-//                                                ..text = widget._teacher.imageUrl,
-//                                              decoration: InputDecoration(
-//                                                focusedBorder: OutlineInputBorder(
-//                                                    borderRadius:
-//                                                        BorderRadius.all(
-//                                                      Radius.circular(15),
-//                                                    ),
-//                                                    //  gapPadding: 5,
-//                                                    borderSide: BorderSide(
-//                                                        color: primaryColor)),
-//                                                prefixIcon: Icon(
-//                                                  Icons.photo,
-//                                                  color: primaryColor,
-//                                                  textDirection:
-//                                                      TextDirection.rtl,
-//                                                ),
-//                                                border: OutlineInputBorder(
-//                                                  borderRadius: BorderRadius.all(
-//                                                      Radius.circular(15)),
-//                                                ),
-//                                                fillColor: Colors.white60,
-//                                                filled: true,
-//                                                contentPadding:
-//                                                    EdgeInsets.symmetric(
-//                                                        horizontal: 5),
-//                                                labelText: "رابط الصورة",
-//                                                labelStyle:
-//                                                    TextStyle(fontSize: 17),
-//                                                // helperText: "hello"
-//                                              ),
-//                                              validator: (value) {
-//                                                if (value.isEmpty) {
-//                                                  return "اضف رابط للصورة";
-//                                                }
-//                                                return null;
-//                                              },
-//                                            ),
-//                                          ),
-//                                          actions: [
-//                                            FlatButton(
-//                                              child: Text("حفظ"),
-//                                              onPressed: () {
-//                                                widget._teacher.imageUrl =
-//                                                    imageController.text;
-//                                                teacherAccount.imageUrl =
-//                                                    widget._teacher.imageUrl;
-////                                                print(
-//                                                    "image = ${teacherAccount.imageUrl}");
-//                                                Navigator.of(context).pop();
-//                                              },
-//                                            )
-//                                          ],
-//                                        ));
-//                              },
-//                              child: Container(
-//                                decoration: BoxDecoration(
-//                                    borderRadius:
-//                                        BorderRadius.all(Radius.circular(20))),
-//                                //color: Colors.redprimaryColor                           width: deviceWidth * 0.6 + 20,
-//                                height: deviceHeight * 0.3,
-//                                alignment: Alignment.center,
-//                                //padding: EdgeInsets.all(8),
-//                                margin: EdgeInsets.symmetric(
-//                                    horizontal: 12, vertical: 10),
-//                                child: ClipRRect(
-//                                    borderRadius:
-//                                        BorderRadius.all(Radius.circular(20)),
-//                                    child: (widget._teacher.imageUrl != null)
-//                                        ? Image.network(
-//                                            widget._teacher.imageUrl,
-//                                            fit: BoxFit.fill,
-//                                          )
-//                                        : Center(
-//                                            child: Text(
-//                                              "انقر هنا لوضع رابط الصورة ",
-//                                              style: TextStyle(fontSize: 18),
-//                                            ),
-//                                          )),
-//                              ),
-//                            ),
+//
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Padding(
@@ -631,7 +566,9 @@ class _CreateAccountState extends State<CreateAccount> {
           ),
         ));
   }
-  showImageModal() {
+  //TODO:uncomment next block
+
+  /* showImageModal() {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -684,7 +621,11 @@ class _CreateAccountState extends State<CreateAccount> {
               ));
         });
   }
-  pickImageFromGallery(ImageSource source) async {
+
+  */
+  //TODO:uncomment next block
+
+  /* pickImageFromGallery(ImageSource source) async {
     final pickedFile =
     await picker.getImage(source: source, maxWidth: 500, maxHeight: 500);
     _image = io.File(pickedFile.path);
@@ -718,5 +659,48 @@ class _CreateAccountState extends State<CreateAccount> {
     }).catchError((){
      // showErrorMsg("Error, check internet connection and try again");
     });
+  }
+  */
+
+  //TODO:uncomment next block
+
+  Uint8List uploadedWebImage;
+  File pickedImageWebFile;
+  pickImageFromComputer() async {
+    InputElement uploadInput = FileUploadInputElement();
+    uploadInput.click();
+    uploadInput.onChange.listen((e) {
+      // read file content as dataURL
+      final files = uploadInput.files;
+      if (files.length == 1) {
+        pickedImageWebFile = files[0];
+        FileReader reader =  FileReader();
+        reader.onLoadEnd.listen((e) {
+          setState(() {
+            uploadedWebImage = reader.result;
+            isPickImage=true;
+//            showProgress();
+            uploadImageFileWeb(pickedImageWebFile, imageName: DateTime.now().millisecondsSinceEpoch.toString());
+          });
+        });
+        reader.onError.listen((fileEvent) {
+          setState(() {
+//            showErrorMsg("Error, please try again later");
+          });
+        });
+        reader.readAsArrayBuffer(pickedImageWebFile);
+      }
+    });
+  }
+  Future<Uri> uploadImageFileWeb(File image,
+      {String imageName}) async {
+    fb.StorageReference storageRef = fb.storage().ref('images/$imageName');
+    fb.UploadTaskSnapshot uploadTaskSnapshot = await storageRef.put(image).future;
+    Uri imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+    selectedImageUrl = imageUri.toString();
+//    hideProgress();
+//    showSuccessMsg("تم اضافة الصورة بنجاح");
+    //print("Success:--> ${imageUri.toString()}");
+    return imageUri;
   }
 }

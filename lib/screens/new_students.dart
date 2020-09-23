@@ -1,4 +1,6 @@
-import 'package:firebase_database/firebase_database.dart';
+//TODO:UNCOMMENT NEXT LINE
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/models/student_account.dart';
@@ -30,12 +32,15 @@ class _NewStudentsState extends State<NewStudents> {
   List<Centers> l = [];
   Centers centers = new Centers();
   List<Centers> choosenCenter = [];
-
-  var _firebaseRef = FirebaseDatabase().reference().child("teacher accounts");
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+  DatabaseReference _firebase = database().ref("teacher accounts");
+  DatabaseReference _firebaseObject = database().ref("teacher accounts");
+//TODO: uncomment next section
+  /*var _firebaseRef = FirebaseDatabase().reference().child("teacher accounts");
   final _firebase = FirebaseDatabase().reference().child("student accounts");
   var _firebaseObject =
       FirebaseDatabase().reference().child("student accounts");
-
+*/
   Future<void> getTeacherId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     id = sharedPreferences.get("teacherId");
@@ -44,58 +49,67 @@ class _NewStudentsState extends State<NewStudents> {
   @override
   void initState() {
     getTeacherId().then((value) {
-      _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
+      //TODO: uncomment next section
+
+      /* _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
         teacherName = dataSnapshot.value["name"];
-      });
-      _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
+      });*/
+      _firebaseRef.child(id).once("value").then((event) {
+        teacherName = event.snapshot.val()["name"];
+        //TODO: uncomment next section
+
+        /* _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
         students = dataSnapshot.value["students"];
-      }).then((value) {
-        _firebase.onChildAdded.listen((studentEvent) {
-           if(students!=null) {
-             students.forEach((element) {
-               if (studentEvent.snapshot.key == element) {
-                 _firebaseObject
-                     .child(element)
-                     .child("centers")
-                     .onChildAdded
-                     .listen((event) {
-                   l.add(Centers.fromSnapshot(event.snapshot));
+      }).then((value) {*/
+        _firebaseRef.child(id).once("value").then((event) {
+          students = event.snapshot.val()["students"];
+        }).then((value) {
+          _firebase.onChildAdded.listen((studentEvent) {
+            if (students != null) {
+              students.forEach((element) {
+                if (studentEvent.snapshot.key == element) {
+                  _firebaseObject
+                      .child(element)
+                      .child("centers")
+                      .onChildAdded
+                      .listen((event) {
+                    l.add(Centers.fromSnapshot(event.snapshot));
 //                   print("${l.length} kaaaaaaaaam");
-                   if (l.length > 1) {
-                     l.removeAt(0);
-                   }
-                   l.forEach((element) {
-                     counter = 0;
-                     element.teachers.forEach((g) {
+                    if (l.length > 1) {
+                      l.removeAt(0);
+                    }
+                    l.forEach((element) {
+                      counter = 0;
+                      element.teachers.forEach((g) {
 //                       print(g);
 ////                    print(teachers.length);
-                       // Map<dynamic,dynamic>.from(g);
-                       if (g[teacherName] == false) {
-                         choosenIndex = counter;
+                        // Map<dynamic,dynamic>.from(g);
+                        if (g[teacherName] == false) {
+                          choosenIndex = counter;
 //                         print(element.groupName);
-                         choosenCenter.add(element);
-                         centerName.add(element.groupName);
+                          choosenCenter.add(element);
+                          centerName.add(element.groupName);
 //                         print(centerName.length);
 //                         print(element.teachers);
-                         setState(() {
+                          setState(() {
 //                        isLoading=true;
-                           newStudents.add(
-                               StudentAccount.fromSnapshot(
-                                   studentEvent.snapshot));
+                            newStudents.add(
+                                StudentAccount.fromSnapshot(
+                                    studentEvent.snapshot));
 //                           print(newStudents.length);
-                         });
-                       } else {
-                         setState(() {
-                           counter++;
+                          });
+                        } else {
+                          setState(() {
+                            counter++;
 //                           print("counter is -> $counter");
-                         });
-                       }
-                     });
-                   });
+                          });
+                        }
+                      });
+                    });
 
-                   setState(() {
-                     isLoading = false;
-                   });
+                    setState(() {
+                      isLoading = false;
+                    });
 //                list.add(event.snapshot.value["teachers"]);
 ////                print(list.length);
 //                if (list.length > 1) {
@@ -119,18 +133,19 @@ class _NewStudentsState extends State<NewStudents> {
 //
 //                  }
 //                });
-                 });
-               }
-             });
-           }
-           else{
-             setState(() {
-                 isLoading=false;
-               });
-           }
+                  });
+                }
+              });
+            }
+            else {
+              setState(() {
+                isLoading = false;
+              });
+            }
+          });
         });
       });
-    });
+      });
 
     // TODO: implement initState
     super.initState();
