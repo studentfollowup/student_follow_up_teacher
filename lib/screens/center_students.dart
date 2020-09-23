@@ -502,6 +502,8 @@ class _CenterStudentsState extends State<CenterStudents> {
                                                               .toString())
                                                           .child(teacherName)
                                                           .set(false);
+                                                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("تم التعطيل",textAlign: TextAlign.right,style: TextStyle(fontSize: 15),),backgroundColor: Colors.green,duration: Duration(seconds: 2),));
+
                                                       setState(() {
                                                         centerStudents
                                                             .removeAt(index);
