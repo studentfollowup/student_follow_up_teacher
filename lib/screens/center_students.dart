@@ -56,7 +56,7 @@ class _CenterStudentsState extends State<CenterStudents> {
         teacherName = dataSnapshot.value["name"];
 //        centers.id="-khgohgodg26fhdi";
 
-//        print(teacherName);
+////        print(teacherName);
       });
       _firebaseRef.child(id).once().then((DataSnapshot dataSnapshot) {
         students = dataSnapshot.value["students"];
@@ -71,7 +71,7 @@ class _CenterStudentsState extends State<CenterStudents> {
                     .onChildAdded
                     .listen((event) {
                   l.add(Centers.fromSnapshot(event.snapshot));
-                  print("${l.length} kaaaaaaaaam");
+//                  print("${l.length} kaaaaaaaaam");
                   if (l.length > 1) {
                     l.removeAt(0);
                   }
@@ -80,26 +80,26 @@ class _CenterStudentsState extends State<CenterStudents> {
 
                     if (element.groupName == widget.center) {
                       element.teachers.forEach((g) {
-                        print(g);
-//                    print(teachers.length);
+//                        print(g);
+////                    print(teachers.length);
                         // Map<dynamic,dynamic>.from(g);
                         if (g[teacherName] == true) {
-                          print("hena feh counter= $counter");
+//                          print("hena feh counter= $counter");
                           choosenIndex.add(counter);
-                          print(element.groupName);
+//                          print(element.groupName);
                           choosenCenter.add(element);
                           centerName.add(element.groupName);
-                          print(centerName.length);
-                          print(element.teachers);
+//                          print(centerName.length);
+//                          print(element.teachers);
                           setState(() {
                             centerStudents.add(StudentAccount.fromSnapshot(
                                 studentEvent.snapshot));
-                            print(centerStudents.length);
+//                            print(centerStudents.length);
                             //empty = false;
                           });
                         } else {
                           counter++;
-                          print("counter is -> $counter");
+//                          print("counter is -> $counter");
                         }
                       });
                     }
@@ -239,7 +239,7 @@ class _CenterStudentsState extends State<CenterStudents> {
 //
                           onChanged: (value) {
 //
-                            print("value=> $value");
+//                            print("value=> $value");
                             if (value != "") {
 //                if (value.runtimeType == int) {
 //                  teacherList.forEach((element) {
@@ -248,12 +248,12 @@ class _CenterStudentsState extends State<CenterStudents> {
 //                    }
 //                  });
 
-                              print("i'm here a string");
+//                              print("i'm here a string");
 
                               centerStudents.forEach((student) {
                                 if (student.name.startsWith(value, 0) ||
                                     student.studentCode.startsWith(value, 0)) {
-                                  print("contains name");
+//                                  print("contains name");
                                   if (searchList.isEmpty) {
                                     setState(() {
                                       searchList.add(student);
@@ -286,11 +286,11 @@ class _CenterStudentsState extends State<CenterStudents> {
                                 }
                               });
                             } else {
-                              print("i'm null");
+//                              print("i'm null");
                               setState(() {
                                 searchList.clear();
-                                print(
-                                    "searchList length => ${searchList.length}");
+//                                print(
+//                                    "searchList length => ${searchList.length}");
                               });
                             }
                           }),
@@ -314,7 +314,7 @@ class _CenterStudentsState extends State<CenterStudents> {
                                       ? showBottomSheet(searchList[index])
                                       : showBottomSheet(centerStudents[index]);
 
-//                            print(centerStudents[index].runtimeType);
+////                            print(centerStudents[index].runtimeType);
                                 },
                                 child: Card(
                                   elevation: 3,
@@ -461,11 +461,11 @@ class _CenterStudentsState extends State<CenterStudents> {
                                                         color: Colors.white),
                                                   ),
                                                   onPressed: () {
-                                                    print(choosenIndex);
-                                                    print("i'm on t3tel ");
-                                                    print(widget.center);
-                                                    print(choosenCenter[index]
-                                                        .groupName);
+//                                                    print(choosenIndex);
+//                                                    print("i'm on t3tel ");
+//                                                    print(widget.center);
+//                                                    print(choosenCenter[index]
+//                                                        .groupName);
 
                                                     if (searchList.isNotEmpty) {
 

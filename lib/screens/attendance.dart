@@ -63,7 +63,6 @@ class _AttendanceState extends State<Attendance> {
   Future<void> getTeacherId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     teacherID = sharedPreferences.get("teacherId");
-    print("teacher id in attendance==> $teacherID}");
   }
 
 
@@ -93,7 +92,6 @@ class _AttendanceState extends State<Attendance> {
                 .onChildAdded
                 .listen((event) {
               l.add(Centers.fromSnapshot(event.snapshot));
-              print("${l.length} kaaaaaaaaam");
               if (l.length > 1) {
                 l.removeAt(0);
               }
@@ -102,16 +100,10 @@ class _AttendanceState extends State<Attendance> {
 
                 if (element.groupName == centerNameString) {
                   element.teachers.forEach((g) {
-                    print(g);
-//                    print(teachers.length);
-                    // Map<dynamic,dynamic>.from(g);
                     if (g[teacherName] == true) {
                       choosenIndex = counter;
-                      print(element.groupName);
                       choosenCenter.add(element);
                       centerName.add(element.groupName);
-                      print(centerName.length);
-                      print(element.teachers);
                       if (studentEvent.snapshot.value["name"] == student) {
                         studentAttendance.teacherName = teacherName;
                         studentAttendance.attendanceTime = _myTime;
@@ -142,7 +134,6 @@ class _AttendanceState extends State<Attendance> {
                       ));
                       setState(() {
                         counter++;
-                        print("counter is -> $counter");
                       });
                     }
                   });
@@ -190,8 +181,6 @@ class _AttendanceState extends State<Attendance> {
         });
       });
     });
-
-    print(student.length);
   }
 
   void getAttendanceList(String value) {
@@ -233,15 +222,12 @@ class _AttendanceState extends State<Attendance> {
       _firebaseRef.child(teacherID).once().then((DataSnapshot dataSnapshot) {
         // teacherName = dataSnapshot.value["name"];
         // students = dataSnapshot.value["students"];
-        print(students.length);
       });
-      print("init state $teacherID");
 
       onChildAdded(Event e) {
         setState(() {
           _centers.add(NewCenter.fromSnapshot(e.snapshot));
         });
-        print(_centers.length);
       }
 
       _firebaseRef
@@ -257,7 +243,6 @@ class _AttendanceState extends State<Attendance> {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild ");
     double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -378,8 +363,7 @@ class _AttendanceState extends State<Attendance> {
                                       });
                                       if (pressed == 1) {
                                         // getAttendanceList();
-                                        print(
-                                            "list el attendance---> ${attendanceList.length}");
+
                                       }
                                     }),
                         ),
@@ -512,7 +496,6 @@ class _AttendanceState extends State<Attendance> {
                             style: TextStyle(fontSize: 18),
                           ),
                           onPressed: () {
-                            print("selected value is --> $_selectedCenter");
                             Toast.show("تم الحفظ", context,
                                 duration: 3, gravity: Toast.CENTER);
                             lectureAttendance.lectureName = lecController.text;
@@ -631,8 +614,7 @@ class _AttendanceState extends State<Attendance> {
                                             Toast.show(result, context);
                                             lectureAttendance.students
                                                 .add(result.toString());
-                                            print(
-                                                "heeeeeeeeeere ${lectureAttendance.students.length}");
+
                                           });
                                         });
                                       }

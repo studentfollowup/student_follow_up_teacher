@@ -21,7 +21,7 @@ class _AttendanceSheetState extends State<AttendanceSheet> {
   void initState() {
     // TODO: implement initState
     students = widget.lectureAttendance.students;
-    print(students.length);
+//    print(students.length);
     super.initState();
   }
 

@@ -59,34 +59,34 @@ class _NewStudentsState extends State<NewStudents> {
                      .onChildAdded
                      .listen((event) {
                    l.add(Centers.fromSnapshot(event.snapshot));
-                   print("${l.length} kaaaaaaaaam");
+//                   print("${l.length} kaaaaaaaaam");
                    if (l.length > 1) {
                      l.removeAt(0);
                    }
                    l.forEach((element) {
                      counter = 0;
                      element.teachers.forEach((g) {
-                       print(g);
-//                    print(teachers.length);
+//                       print(g);
+////                    print(teachers.length);
                        // Map<dynamic,dynamic>.from(g);
                        if (g[teacherName] == false) {
                          choosenIndex = counter;
-                         print(element.groupName);
+//                         print(element.groupName);
                          choosenCenter.add(element);
                          centerName.add(element.groupName);
-                         print(centerName.length);
-                         print(element.teachers);
+//                         print(centerName.length);
+//                         print(element.teachers);
                          setState(() {
 //                        isLoading=true;
                            newStudents.add(
                                StudentAccount.fromSnapshot(
                                    studentEvent.snapshot));
-                           print(newStudents.length);
+//                           print(newStudents.length);
                          });
                        } else {
                          setState(() {
                            counter++;
-                           print("counter is -> $counter");
+//                           print("counter is -> $counter");
                          });
                        }
                      });
@@ -96,23 +96,23 @@ class _NewStudentsState extends State<NewStudents> {
                      isLoading = false;
                    });
 //                list.add(event.snapshot.value["teachers"]);
-//                print(list.length);
+////                print(list.length);
 //                if (list.length > 1) {
 //                  list.removeAt(0);
 //                }
 //                list.forEach((listCheck) {
-//                  print("ht3dy->${Map<dynamic, dynamic>.from(listCheck[1])}");
-//                  print(list.length);
-//                  print(listCheck[1]);
+////                  print("ht3dy->${Map<dynamic, dynamic>.from(listCheck[1])}");
+////                  print(list.length);
+////                  print(listCheck[1]);
 //                  check.add(Map<dynamic, dynamic>.from(listCheck[1]));
-//                  print("check = ${check.length}");
+////                  print("check = ${check.length}");
 //                });
 //                if (check.length > 1) {
 //                  check.removeAt(0);
 //                }
 //
 //                check.forEach((e) {
-//                  print(e);
+////                  print(e);
 //                  if (e[teacherName] == false) {
 //
 //

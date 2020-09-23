@@ -22,19 +22,15 @@ class _SignInState extends State<SignIn> {
   int index;
 
   TeacherAccount getTeacher(String code) {
-      print("teachers number =${_teachers.length}");
     index = _teachers.indexWhere((element) => (element.teacherCode == code||element.clerkCode==code));
     if (index == -1) {
       Toast.show("كود خاطىء ، حاول مرة اخرى", context,
           duration: 3, gravity: Toast.CENTER);
       return null;
     }
-    // print("index is = $index");
 
     else{
       if(_teachers[index].expired!=true){
-        print("i'm not expired && $code ");
-        print(_teachers[index].expired);
       saveTeacherId(index);
       return _teachers[index];
 
@@ -50,7 +46,6 @@ class _SignInState extends State<SignIn> {
   Future<void> saveTeacherId(int index) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString("teacherId",_teachers[index].userId);
-  //print("teacherId in shared ${pref.getString("teacherId")}");
   }
   @override
   void initState() {
@@ -59,7 +54,6 @@ class _SignInState extends State<SignIn> {
     onChildAdded(Event event) {
       if(event.snapshot.value["expiryDate"]!=null){
       _teachers.add(TeacherAccount.fromSnapshot(event.snapshot));
-      //print("teachers number onChild added=${_teachers.length}");
     }}
     _firebaseRef.onChildAdded.listen(onChildAdded);
 
@@ -153,7 +147,6 @@ class _SignInState extends State<SignIn> {
                     borderRadius: BorderRadius.circular(20)),
                 onPressed: () {
                    teacher = getTeacher(codeController.text);
-              //    print(teacher);
 
                   if (teacher != null) {
                     Navigator.of(context).pushReplacement(

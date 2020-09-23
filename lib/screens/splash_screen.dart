@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => Profile(teacherId)));
     }
-    print("result ==> $teacherId");
+//    print("result ==> $teacherId");
     return teacherId;
   }
 

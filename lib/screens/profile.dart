@@ -40,17 +40,8 @@ class _ProfileState extends State<Profile> {
         .then((DataSnapshot dataSnapshot) {
       setState(() {
         currentUser = TeacherAccount.fromSnapshot(dataSnapshot);
-        print(currentUser.teacherCode);
-        print(currentUser.name);
-        print(currentUser. expired);
-        print(currentUser.clerkCode);
 
       });
-      print("currentUser =>>>>>>> ${currentUser.clerkCode}");
-    }).then((value) {
-      print("i'm on time zone");
-      print(currentUser.expiryDate);
-      print(_myTime);
     });
   }
 
@@ -118,11 +109,9 @@ class _ProfileState extends State<Profile> {
       }
       else{
         getTime().then((value) {
-          print("myTime $_myTime");
         }).then((value) {
           if (currentUser.expiryDate == _myTime ||
               _myTime.isAfter(currentUser.expiryDate)) {
-            print("a5eraaaaaaaaaaaaaan");
             if (currentUser.version == "النسخة التجريبية") {
               currentUser.expired = true;
               _firebaseRef.child(widget.teacherId).child("expired").set(true);
@@ -148,7 +137,6 @@ class _ProfileState extends State<Profile> {
 
     });
 
-    print("id is =>>>>>> ${widget.teacherId}");
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOS = new IOSInitializationSettings();
@@ -160,7 +148,6 @@ class _ProfileState extends State<Profile> {
     _firebase.once().then((DataSnapshot dataSnapshot) {
       weekNotification = dataSnapshot.value["weekNotify"];
       endNotification = dataSnapshot.value["endNotify"];
-      print("week --> $weekNotification \n end --> $endNotification");
     });
   }
 

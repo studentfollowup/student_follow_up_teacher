@@ -29,7 +29,6 @@ class _AddCenterState extends State<AddCenter> {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       currentUserId = sharedPreferences.get("teacherId");
-      print("currentUser $currentUserId");
       Toast.show("تم اضافة السنتر", context,
           duration: 3, gravity: Toast.CENTER);
 

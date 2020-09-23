@@ -62,24 +62,24 @@ class _CreateAccountState extends State<CreateAccount> {
   Future<void> saveTeacherId(String id) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString("teacherId", id);
-    print("teacherId in shared ${pref.getString("teacherId")}");
+//    print("teacherId in shared ${pref.getString("teacherId")}");
   }
 
   //save function of form
   Future<void> onSave() async {
-    print("i'm here onSave");
+//    print("i'm here onSave");
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (titleText == "تعديل الحساب الشخصى") {
-        print("ana b3dl el profile");
-        print("${widget._teacher.userId}");
+//        print("ana b3dl el profile");
+//        print("${widget._teacher.userId}");
         teacherAccount.teacherCode = widget._teacher.teacherCode;
         teacherAccount.userId = widget._teacher.userId;
         teacherAccount.accepted = widget._teacher.accepted;
         teacherAccount.clerkCode = widget._teacher.clerkCode;
         teacherAccount.expiryDate=widget._teacher.expiryDate;
         teacherAccount.expired=widget._teacher.expired;
-        print("this is accept => ${widget._teacher.accepted}");
+//        print("this is accept => ${widget._teacher.accepted}");
         teacherAccount.version=widget._teacher.version;
 
         _firebaseRef.child(widget._teacher.userId).set(teacherAccount.toMap());
@@ -87,7 +87,7 @@ class _CreateAccountState extends State<CreateAccount> {
             builder: (ctx) => Profile(teacherAccount.userId)));
       } else {
         _myTime = await NTP.now();
-print("i'm a new Teacher");
+//print("i'm a new Teacher");
         teacherAccount.teacherCode = randomNumeric(5);
         teacherAccount.clerkCode = randomNumeric(5);
         teacherAccount.version = widget._teacher.version;
@@ -97,9 +97,9 @@ print("i'm a new Teacher");
         }
         _firebaseRef = _firebaseRef.push();
         String id = _firebaseRef.key;
-        print("id is >>>> $id");
+//        print("id is >>>> $id");
         _firebaseRef.set(teacherAccount.toMap());
-        print("version >>> ${widget._teacher.version}");
+//        print("version >>> ${widget._teacher.version}");
         saveTeacherId(id);
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (ctx) => Profile(id)));
@@ -111,20 +111,20 @@ print("i'm a new Teacher");
   }
 
   Future<void> getTime() async {
-    print("i'm on time zone");
+//    print("i'm on time zone");
     _myTime = await NTP.now();
     DateTime _ntpTime;
 
     /// Or you could get NTP current (It will call DateTime.now() and add NTP offset to it)
-    print("from date time .now ${DateTime.now()}");
+//    print("from date time .now ${DateTime.now()}");
 
     /// Or get NTP offset (in milliseconds) and add it yourself
     final int offset = await NTP.getNtpOffset(localTime: DateTime.now());
     _ntpTime = _myTime.add(Duration(milliseconds: offset));
 
-    print('My time: $_myTime');
-    print('NTP time: $_ntpTime');
-    print('Difference: ${_myTime.difference(_ntpTime).inMilliseconds}ms');
+//    print('My time: $_myTime');
+//    print('NTP time: $_ntpTime');
+//    print('Difference: ${_myTime.difference(_ntpTime).inMilliseconds}ms');
   }
 
 
@@ -139,8 +139,8 @@ print("i'm a new Teacher");
   @override
   void initState() {
     // TODO: implement initState
-    print("_teacher ${imageController.text}");
-    print("Teacher ID: --> ${widget._teacher.userId}");
+//    print("_teacher ${imageController.text}");
+//    print("Teacher ID: --> ${widget._teacher.userId}");
     if (widget._teacher.name != null) {
       setState(() {
           titleText = "تعديل الحساب الشخصى";
@@ -157,7 +157,7 @@ print("i'm a new Teacher");
     getTime();
 //  _auth = FirebaseAuth.instance;
 //  _getCurrentUser();
-//  print("this is current user: $mCurrentUser");
+////  print("this is current user: $mCurrentUser");
     super.initState();
   }
 
@@ -316,7 +316,7 @@ print("i'm a new Teacher");
 //                                                    imageController.text;
 //                                                teacherAccount.imageUrl =
 //                                                    widget._teacher.imageUrl;
-//                                                print(
+////                                                print(
 //                                                    "image = ${teacherAccount.imageUrl}");
 //                                                Navigator.of(context).pop();
 //                                              },
@@ -701,14 +701,14 @@ print("i'm a new Teacher");
         .child('teacher_images/${DateTime.now()}');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
-    print('File Uploaded');
+//    print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
         selectedImageUrl = fileURL;
       });
       if(selectedImageUrl!=null){
        teacherAccount.imageUrl=selectedImageUrl;
-       print(selectedImageUrl);
+//       print(selectedImageUrl);
       }
       loadingDialog.hide();
      // showSuccessMsg("Image Uploaded successfully");

@@ -33,7 +33,7 @@ class _ChooseVersionState extends State<ChooseVersion> {
     _firebaseRef.child("full version").once().then((DataSnapshot dataSnapshot) {
       setState(() {
         fullVersionMsg = dataSnapshot.value["fullVersionMessage"];
-        print("msg => $fullVersionMsg");
+//        print("msg => $fullVersionMsg");
       });
     });
     super.initState();
