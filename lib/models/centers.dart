@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-
+//import 'package:firebase_database/firebase_database.dart';
+//TODO:uncomment next statement
+import 'package:firebase/firebase.dart';
 class Centers {
   String id;
   String groupName;
@@ -16,7 +16,16 @@ class Centers {
   }
 
   Centers.fromSnapshot(DataSnapshot dataSnapshot)
-      : id = dataSnapshot.key,
-        groupName = dataSnapshot.value["groupName"],
-        teachers = (dataSnapshot.value["teachers"]);
+  //TODO:uncomment for web version
+     /* : id = dataSnapshot.key,
+
+      groupName =dataSnapshot.value["groupName"],
+        teachers =(dataSnapshot.value["teachers"]);
+
+      */
+
+         : id = dataSnapshot.key,
+
+      groupName = dataSnapshot.val()["groupName"],
+        teachers = dataSnapshot.val()["teachers"];
 }

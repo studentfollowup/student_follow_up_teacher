@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../others/colors.dart';
-import 'package:firebase_database/firebase_database.dart';
+//TODO : uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../others/helper.dart';
@@ -16,8 +18,10 @@ class _SignInState extends State<SignIn> {
   final codeController = TextEditingController();
 
   List<TeacherAccount> _teachers = [];
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+//TODO : uncomment next statement
 
-  var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
+  //var _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
   TeacherAccount teacher ;
   int index;
 
@@ -51,7 +55,9 @@ class _SignInState extends State<SignIn> {
   void initState() {
 
     _firebaseRef.remove();
-    onChildAdded(Event event) {
+    //TODO : uncomment next word
+
+    onChildAdded(/*Event*/ event) {
       if(event.snapshot.value["expiryDate"]!=null){
       _teachers.add(TeacherAccount.fromSnapshot(event.snapshot));
     }}
@@ -85,13 +91,14 @@ class _SignInState extends State<SignIn> {
                     borderRadius: BorderRadius.circular(20),
                     color: primaryColor),
                 margin: EdgeInsets.symmetric(horizontal: 30),
-                height: 150,
+                height: MediaQuery.of(context).size.height*0.2+20,
+                width: MediaQuery.of(context).size.width*0.6,
                 child: Directionality(
                   textDirection: TextDirection.rtl,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Card(
-                      elevation: 4,
+                      elevation: 5,
                       shadowColor: accentColor,
                       child: Container(
                         alignment: Alignment.center,
@@ -117,13 +124,15 @@ class _SignInState extends State<SignIn> {
                             ),
                             fillColor: Colors.white60,
                             filled: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                            //TODO : uncomment next statement
+                            contentPadding:EdgeInsets.symmetric(vertical: 20,horizontal: 5) /*EdgeInsets.symmetric(horizontal: 5)*/,
                             labelText: "كود المعلم",
                             labelStyle:
                                 TextStyle(fontSize: 17),
                             // helperText: "hello"
                           ),
                           controller: codeController,
+
                         ),
                       ),
                     ),
@@ -133,14 +142,13 @@ class _SignInState extends State<SignIn> {
               SizedBox(height: 20),
               RaisedButton(
                 elevation: 4,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+                //TODO : uncomment next statement
+
+                padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.04,vertical: 30)/*EdgeInsets.symmetric(vertical: 5, horizontal: 30)*/,
                 color: accentColor,
                 child: Text(
                   "دخول",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
+                  style: titleText,
                 ),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

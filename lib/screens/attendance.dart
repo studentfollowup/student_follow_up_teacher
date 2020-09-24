@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ntp/ntp.dart';
-import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
+import '../others/colors.dart';
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:firebase_database/firebase_database.dart';
+//TODO: uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/models/centers.dart';
 import 'package:student_follow_up_teacher/models/new_center.dart';
@@ -42,11 +44,16 @@ class _AttendanceState extends State<Attendance> {
 
   final lecController = TextEditingController();
   final lecNumController = TextEditingController();
+  DatabaseReference _firebaseRef = database().ref("teacher accounts");
+  DatabaseReference _firebase = database().ref("teacher accounts");
+  DatabaseReference _firebaseObject = database().ref("teacher accounts");
+//TODO: uncomment next section
+  /*
   var _firebaseRef = FirebaseDatabase().reference().child("teacher accounts");
   final _firebase = FirebaseDatabase().reference().child("student accounts");
   var _firebaseObject =
       FirebaseDatabase().reference().child("student accounts");
-
+*/
   String teacherID;
   int pressed = 0;
   String noEmpty = "لا يوجد محاضرات";
@@ -104,7 +111,8 @@ class _AttendanceState extends State<Attendance> {
                       choosenIndex = counter;
                       choosenCenter.add(element);
                       centerName.add(element.groupName);
-                      if (studentEvent.snapshot.value["name"] == student) {
+                      //TODO: uncomment next statement
+                      if (/*studentEvent.snapshot.value["name"] == student*/studentEvent.snapshot.val()["name"] == student) {
                         studentAttendance.teacherName = teacherName;
                         studentAttendance.attendanceTime = _myTime;
                         studentAttendance.centerName = centerNameString;
@@ -118,10 +126,11 @@ class _AttendanceState extends State<Attendance> {
                       }
                       setState(() {
 
-                        print(centerStudents.length);
+//TODO: uncomment next statement
+                        /*students
+                            .remove(studentEvent.snapshot.value["studentId"]);*/
                         students
-                            .remove(studentEvent.snapshot.value["studentId"]);
-                        //empty = false;
+                            .remove(studentEvent.snapshot.val()["studentId"]);
                       });
                     } else {
                       Scaffold.of(context).showSnackBar(SnackBar(
@@ -138,7 +147,9 @@ class _AttendanceState extends State<Attendance> {
                     }
                   });
                 } else {
-                  if (students.isNotEmpty &&(studentEvent.snapshot.value["name"] == student)) {
+                  //TODO: uncomment next statement
+
+                  if (/*students.isNotEmpty &&(studentEvent.snapshot.value["name"] == student*/students.isNotEmpty &&(studentEvent.snapshot.val()["name"] == student)) {
                     element.teachers.forEach((e) {
                       if (e[teacherName] == false) {
                         Scaffold.of(context).showSnackBar(SnackBar(
@@ -196,7 +207,9 @@ class _AttendanceState extends State<Attendance> {
           .child("attendance")
           .onChildAdded
           .listen((event) {
-        if (event.snapshot.value["students"] != null) {
+        //TODO: uncomment next statement
+
+        if (/*event.snapshot.value["students"] != null*/event.snapshot.val()["students"] != null) {
         } else {
           setState(() {
             attendanceList.add(LectureAttendance.fromSnapshot(event.snapshot));
@@ -219,12 +232,20 @@ class _AttendanceState extends State<Attendance> {
   @override
   void initState() {
     getTeacherId().then((value) {
-      _firebaseRef.child(teacherID).once().then((DataSnapshot dataSnapshot) {
+      //TODO: uncomment next block
+
+    /*  _firebaseRef.child(teacherID).once().then((DataSnapshot dataSnapshot) {
+        // teacherName = dataSnapshot.value["name"];
+        // students = dataSnapshot.value["students"];
+      });*/
+
+      _firebaseRef.child(teacherID).once("value").then((value) {
         // teacherName = dataSnapshot.value["name"];
         // students = dataSnapshot.value["students"];
       });
+      //TODO: uncomment next block
 
-      onChildAdded(Event e) {
+    /*  onChildAdded(Event e) {
         setState(() {
           _centers.add(NewCenter.fromSnapshot(e.snapshot));
         });
@@ -235,8 +256,17 @@ class _AttendanceState extends State<Attendance> {
           .child("centers")
           .onChildAdded
           .listen(onChildAdded);
-    });
-
+    });*/
+      _firebaseRef
+          .child(teacherID)
+          .child("centers")
+          .onChildAdded
+          .listen((event) {
+        setState(() {
+          _centers.add(NewCenter.fromSnapshot(event.snapshot));
+        });
+      });
+      });
     // TODO: implement initState
     super.initState();
   }

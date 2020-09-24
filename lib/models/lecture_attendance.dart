@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-
+//import 'package:firebase_database/firebase_database.dart';
+//TODO: uncomment next Statement
+import 'package:firebase/firebase.dart';
 class LectureAttendance {
   DateTime time;
   String id;
@@ -21,11 +21,21 @@ class LectureAttendance {
   }
 
   LectureAttendance.fromSnapshot(DataSnapshot dataSnapshot){
-    id=dataSnapshot.key;
+   /* id=dataSnapshot.key;
+    //TODO:uncomment for web version
     time=dataSnapshot.value["time"];
     lectureName=dataSnapshot.value["lectureName"];
     lectureNumber=dataSnapshot.value["lectureNumber"];
     students=dataSnapshot.value["students"];
+
+
+
+    */
+ id=dataSnapshot.key;
+    time=dataSnapshot.val()["time"];
+    lectureName=dataSnapshot.val()["lectureName"];
+    lectureNumber=dataSnapshot.val()["lectureNumber"];
+    students=dataSnapshot.val()["students"];
 
   }
 }

@@ -55,7 +55,7 @@ class _TeacherCaseState extends State<TeacherCase> {
             ),
 //            ),
             InkWell(
-              onTap: () => Navigator.of(context).pushReplacement(
+              onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => SignIn())),
               child: Container(
                 width: deviceWidth * 0.8,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
-import 'package:firebase_database/firebase_database.dart';
+import '../others/colors.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_follow_up_teacher/others/helper.dart';
 import '../models/lecture_attendance.dart';
