@@ -1,18 +1,15 @@
-
+import '../models/teacher_account.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
-import 'package:student_follow_up_teacher/screens/choose_version.dart';
 import 'package:student_follow_up_teacher/screens/profile.dart';
 import '../models/teacher_account.dart';
 //TODO: uncomment next statement
 //import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase/firebase.dart';
 import '../others/colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:true_time/true_time.dart';
@@ -50,6 +47,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
   io.File _image;
   bool isPickImage = false;
+
   String selectedImageUrl = "";
 
   final picker = ImagePicker();
@@ -67,8 +65,6 @@ class _CreateAccountState extends State<CreateAccount> {
       version: null);
   DateTime _myTime;
 
-  FirebaseUser mCurrentUser;
-  FirebaseAuth _auth;
 
   Future<void> saveTeacherId(String id) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -78,7 +74,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
   //save function of form
   Future<void> onSave() async {
-//    print("i'm here onSave");
+    print("i'm here onSave");
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (titleText == "تعديل الحساب الشخصى") {
@@ -209,8 +205,9 @@ class _CreateAccountState extends State<CreateAccount> {
                   child: Form(
                     key: _formKey,
                     child: Container(
-                      margin: EdgeInsets.all(10),
-
+                      //TODO:uncomment next line
+//                      margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -316,7 +313,9 @@ class _CreateAccountState extends State<CreateAccount> {
                                         fillColor: Colors.white60,
                                         filled: true,
                                         contentPadding:
-                                            EdgeInsets.symmetric(horizontal: 5),
+                                            //TODO: uncomment next line
+                                            //EdgeInsets.symmetric(horizontal: 5),
+                                        EdgeInsets.symmetric(horizontal: 5,vertical: 25),
                                         labelText: "اسم المعلم",
                                         labelStyle: TextStyle(fontSize: 17),
                                         // helperText: "hello"
@@ -349,8 +348,6 @@ class _CreateAccountState extends State<CreateAccount> {
                                             //  gapPadding: 5,
                                             borderSide:
                                                 BorderSide(color: primaryColor)),
-                                        // hintText: "اسم المعلم",
-                                        //  hintStyle: TextStyle(fontSize: 15),
                                         prefixIcon: Icon(
                                           Icons.subject,
                                           color: primaryColor,
@@ -363,7 +360,10 @@ class _CreateAccountState extends State<CreateAccount> {
                                         fillColor: Colors.white60,
                                         filled: true,
                                         contentPadding:
-                                            EdgeInsets.symmetric(horizontal: 5),
+                                        //TODO: uncomment next line
+
+//                                            EdgeInsets.symmetric(horizontal: 5),
+                                        EdgeInsets.symmetric(horizontal: 5,vertical: 25),
                                         labelText: "المادة",
                                         labelStyle: TextStyle(fontSize: 17),
                                         // helperText: "hello"
@@ -408,7 +408,10 @@ class _CreateAccountState extends State<CreateAccount> {
                                           fillColor: Colors.white60,
                                           filled: true,
                                           contentPadding:
-                                              EdgeInsets.symmetric(horizontal: 8),
+                                          //TODO: uncomment next line
+//                                              EdgeInsets.symmetric(horizontal: 8),
+
+                                          EdgeInsets.symmetric(horizontal: 5,vertical: 25),
                                           labelText: "المراحل الدراسية ",
                                           labelStyle: TextStyle(fontSize: 17),
                                           helperText:
@@ -449,7 +452,10 @@ class _CreateAccountState extends State<CreateAccount> {
                                         fillColor: Colors.white60,
                                         filled: true,
                                         contentPadding:
-                                            EdgeInsets.symmetric(horizontal: 5),
+                                        //TODO: uncomment next line
+
+//                                            EdgeInsets.symmetric(horizontal: 5),
+                                        EdgeInsets.symmetric(horizontal: 5,vertical: 25),
                                         labelText: "نبذة",
                                         labelStyle: TextStyle(fontSize: 17),
                                       ),
@@ -492,7 +498,11 @@ class _CreateAccountState extends State<CreateAccount> {
                                         fillColor: Colors.white60,
                                         filled: true,
                                         contentPadding:
-                                            EdgeInsets.symmetric(horizontal: 5),
+
+                                        //TODO: uncomment next line
+
+//                                            EdgeInsets.symmetric(horizontal: 5),
+                                        EdgeInsets.symmetric(horizontal: 5,vertical: 25),
                                         labelText: "ارقام التليفون",
                                         labelStyle: TextStyle(fontSize: 17),
                                         // helperText: "hello"
@@ -519,22 +529,14 @@ class _CreateAccountState extends State<CreateAccount> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(50)),
                                 child: Builder(
-                                  builder: (ctx) => Container(
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight,
-                                            colors: [
-                                          primaryColor.withRed(300),
-                                          primaryColor.withGreen(200),
-                                          primaryColor.withBlue(250)
-                                        ])),
-                                    width: deviceWidth * 0.4,
-                                    child: RaisedButton(
+                                  builder: (ctx) =>  RaisedButton(
                                         color: primaryColor,
                                         textColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 15),
+                                        padding:
+                                            //TODO: uncommennt next line
+                                        /*EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 15),*/
+                                        EdgeInsets.symmetric(vertical: 20,horizontal: deviceWidth*0.06+10),
                                         elevation: 3,
                                         child: Text(
                                           buttonText,
@@ -553,7 +555,7 @@ class _CreateAccountState extends State<CreateAccount> {
 //                                        ));
                                         }),
                                   ),
-                                ))
+                                )
                           ],
                         ),
                       ),

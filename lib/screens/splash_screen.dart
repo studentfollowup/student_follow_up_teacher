@@ -1,21 +1,16 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:student_follow_up_teacher/models/teacher_account.dart';
 import 'package:student_follow_up_teacher/screens/teacher_case.dart';
-import 'create_account.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'profile.dart';
-import 'package:firebase_database/firebase_database.dart';
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-//  final _firebaseRef = FirebaseDatabase().reference().child('teacher accounts');
-  TeacherAccount currentUser;
+
   String teacherId;
 
   @override

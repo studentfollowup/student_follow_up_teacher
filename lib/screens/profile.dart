@@ -7,7 +7,8 @@ import 'package:student_follow_up_teacher/widgets/drawer.dart';
 //TODO:uncomment next statement
 //import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase/firebase.dart';
-import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
+import '../others/colors.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ntp/ntp.dart';
 import 'teacher_case.dart';

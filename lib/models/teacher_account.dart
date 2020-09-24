@@ -1,6 +1,6 @@
-//import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 //TODO: uncomment next Statement
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase/firebase.dart';
 class TeacherAccount {
   String userId;

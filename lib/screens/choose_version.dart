@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:student_follow_up_teacher/models/teacher_account.dart';
-import 'package:student_follow_up_teacher/screens/create_account.dart';
+import '../models/teacher_account.dart';
+import '../others/helper.dart';
+import '../screens/create_account.dart';
 import '../others/colors.dart';
 import 'profile.dart';
-import 'package:firebase_database/firebase_database.dart';
+
+//TODO: uncomment next statement
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase/firebase.dart';
 
 class ChooseVersion extends StatefulWidget {
   @override
@@ -24,16 +28,26 @@ class _ChooseVersionState extends State<ChooseVersion> {
       version: null);
 
   String fullVersionMsg;
-  var _firebaseRef =
-      FirebaseDatabase().reference().child('admin msgs notification');
+
+  //TODO: uncomment next line
+  /*var _firebaseRef =
+      FirebaseDatabase().reference().child('admin msgs notification');*/
+  DatabaseReference _firebaseRef = database().ref('admin msgs notification');
 
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: uncomment next block
+    /*
     _firebaseRef.child("full version").once().then((DataSnapshot dataSnapshot) {
       setState(() {
         fullVersionMsg = dataSnapshot.value["fullVersionMessage"];
-//        print("msg => $fullVersionMsg");
+      });
+    });*/
+
+    _firebaseRef.child("full version").once("value").then((event) {
+      setState(() {
+        fullVersionMsg = event.snapshot.val()["fullVersionMessage"];
+      //  print("msg => $fullVersionMsg");
       });
     });
     super.initState();
@@ -87,7 +101,7 @@ class _ChooseVersionState extends State<ChooseVersion> {
                                     style: TextStyle(
                                         color: primaryColor,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 24),
+                                        fontSize: 20),
                                   ),
                                   onPressed: () {
                                     Navigator.of(context).pop();
@@ -134,6 +148,7 @@ class _ChooseVersionState extends State<ChooseVersion> {
             ),
             GestureDetector(
               onTap: () {
+               if (fullVersionMsg!=null)
                 showDialog(
                     context: context,
                     builder: (ctx) => Container(
@@ -153,11 +168,11 @@ class _ChooseVersionState extends State<ChooseVersion> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 26),
                             ),
-                            content: Text(
-                              fullVersionMsg,
-                              style: TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
+                            content:  Text(
+                                    fullVersionMsg,
+                                    style: TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
                             actions: [
                               FlatButton(
                                 child: Text(

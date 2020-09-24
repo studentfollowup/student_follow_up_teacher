@@ -55,7 +55,7 @@ class _SignInState extends State<SignIn> {
   void initState() {
 
     _firebaseRef.remove();
-    //TODO : uncomment next statement
+    //TODO : uncomment next word
 
     onChildAdded(/*Event*/ event) {
       if(event.snapshot.value["expiryDate"]!=null){
@@ -91,13 +91,14 @@ class _SignInState extends State<SignIn> {
                     borderRadius: BorderRadius.circular(20),
                     color: primaryColor),
                 margin: EdgeInsets.symmetric(horizontal: 30),
-                height: 150,
+                height: MediaQuery.of(context).size.height*0.2+20,
+                width: MediaQuery.of(context).size.width*0.6,
                 child: Directionality(
                   textDirection: TextDirection.rtl,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Card(
-                      elevation: 4,
+                      elevation: 5,
                       shadowColor: accentColor,
                       child: Container(
                         alignment: Alignment.center,
@@ -123,13 +124,15 @@ class _SignInState extends State<SignIn> {
                             ),
                             fillColor: Colors.white60,
                             filled: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                            //TODO : uncomment next statement
+                            contentPadding:EdgeInsets.symmetric(vertical: 20,horizontal: 5) /*EdgeInsets.symmetric(horizontal: 5)*/,
                             labelText: "كود المعلم",
                             labelStyle:
                                 TextStyle(fontSize: 17),
                             // helperText: "hello"
                           ),
                           controller: codeController,
+
                         ),
                       ),
                     ),
@@ -139,14 +142,13 @@ class _SignInState extends State<SignIn> {
               SizedBox(height: 20),
               RaisedButton(
                 elevation: 4,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+                //TODO : uncomment next statement
+
+                padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width*0.04,vertical: 30)/*EdgeInsets.symmetric(vertical: 5, horizontal: 30)*/,
                 color: accentColor,
                 child: Text(
                   "دخول",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
+                  style: titleText,
                 ),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

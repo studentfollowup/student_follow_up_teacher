@@ -4,7 +4,7 @@ import 'package:firebase/firebase.dart';
 //import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'file:///C:/Users/10/Downloads/cashier/student_follow_up_teacher/lib/others/colors.dart';
+import '../others/colors.dart';
 import 'package:student_follow_up_teacher/models/new_center.dart';
 import 'package:student_follow_up_teacher/screens/center_students.dart';
 import 'package:student_follow_up_teacher/widgets/drawer.dart';

@@ -1,13 +1,11 @@
-//import 'package:firebase/firebase.dart';
+import 'package:firebase/firebase.dart';
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
-//TODO: uncomment next statement
+import 'screens/create_account.dart';
+import 'screens/profile.dart';
+void main() {
 
-import 'package:firebase/firebase.dart';
-
-void main(){
-//TODO: ucomment next block
-initializeApp(
+  initializeApp(
       apiKey: "AIzaSyBR_xfNOECWLtt9dcPUfuGHamxKcsStgQg",
       authDomain: "student-followup-3c342.firebaseapp.com",
       databaseURL: "https://student-followup-3c342.firebaseio.com",
@@ -35,5 +33,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
